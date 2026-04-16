@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKR Personal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e10;
+    --surface: #17171a;
+    --surface2: #1f1f24;
+    --border: #2a2a32;
+    --accent: #c8a96e;
+    --accent2: #7ec8a9;
+    --accent3: #c87e9a;
+    --text: #e8e4dc;
+    --muted: #7a7880;
+    --danger: #c87e7e;
+  }
+  body.light {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --surface2: #ede9e3;
+    --border: #d8d2c8;
+    --accent: #a07840;
+    --accent2: #3a8a6a;
+    --accent3: #a04060;
+    --text: #2a2520;
+    --muted: #8a8078;
+    --danger: #a04040;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    padding: 0 0 80px;
+    transition: background 0.3s, color 0.3s;
+  }
+  header {
+    padding: 36px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--accent);
+  }
+  header h1 span { color: var(--text); opacity: 0.4; font-weight: 400; }
+  .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* THEME TOGGLE */
+  .theme-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px;
+    color: var(--muted);
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .theme-btn:hover { color: var(--text); border-color: var(--accent); }
+
+  /* SYNC */
+  .sync-status {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sync-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: background 0.3s;
+  }
+  .sync-dot.ok { background: var(--accent2); }
+  .sync-dot.err { background: var(--danger); }
+  .sync-dot.loading { background: var(--accent); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* PERIOD SELECT */
+  .period-select {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+  }
+  .period-select select {
+    background: transparent; border: none;
+    color: var(--text); font-family: 'Lato', sans-serif;
+    font-size: 12px; cursor: pointer; outline: none;
+  }
+  .period-select select option { background: var(--surface2); }
+
+  /* STATS */
+  .stats-bar { display: flex; gap: 1px; padding: 0 40px; margin: 24px 0; }
+  .stat { flex: 1; background: var(--surface); padding: 16px 20px; border: 1px solid var(--border); }
+  .stat:first-child { border-radius: 8px 0 0 8px; }
+  .stat:last-child { border-radius: 0 8px 8px 0; }
+  .stat-label { color: var(--muted); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-value { font-size: 22px; font-family: 'Playfair Display', serif; color: var(--accent); }
+  .stat-value.green { color: var(--accent2); }
+  .stat-value.pink { color: var(--accent3); }
+
+  /* MAIN */
+  .main { padding: 0 40px; }
+
+  /* OBJECTIVE CARD */
+  .objective-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 20px; overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .objective-card:hover { border-color: var(--accent); }
+  .obj-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 20px; cursor: pointer;
+    background: var(--surface2); border-bottom: 1px solid var(--border);
+  }
+  .obj-color { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .obj-title { flex: 1; font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--text); }
+  .obj-progress-pill { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); }
+  .obj-actions { display: flex; gap: 6px; }
+  .icon-btn {
+    background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 14px; padding: 2px 6px;
+    border-radius: 4px; transition: color 0.15s, background 0.15s; line-height: 1;
+  }
+  .icon-btn:hover { color: var(--text); background: var(--border); }
+  .icon-btn.danger:hover { color: var(--danger); }
+  .obj-progress-bar-wrap { height: 3px; background: var(--border); }
+  .obj-progress-bar { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+
+  /* KEY RESULTS */
+  .key-results { padding: 12px 0; }
+  .key-results.collapsed { display: none; }
+  .kr-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .kr-row:last-child { border-bottom: none; }
+  .kr-row:hover { background: var(--surface2); }
+  .kr-bullet { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .kr-text { flex: 1; color: var(--text); line-height: 1.5; font-size: 14px; font-weight: 300; letter-spacing: 0.2px; }
+  .kr-progress-area { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .kr-bar-wrap { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .kr-bar { height: 100%; border-radius: 2px; transition: width 0.3s; }
+
+  .kr-spinner { display: flex; align-items: center; gap: 4px; }
+  .kr-spinner input[type=number] {
+    width: 48px; background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Lato', sans-serif; font-size: 13px; font-weight: 700;
+    padding: 3px 6px; border-radius: 4px; outline: none; text-align: center;
+    -moz-appearance: textfield; transition: border-color 0.15s;
+  }
+  .kr-spinner input[type=number]::-webkit-inner-spin-button,
+  .kr-spinner input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .kr-spinner input[type=number]:focus { border-color: var(--accent); }
+  .kr-spinner-btns { display: flex; flex-direction: column; gap: 1px; }
+  .kr-spin-btn {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    width: 18px; height: 14px; cursor: pointer; border-radius: 3px;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; line-height: 1; padding: 0;
+  }
+  .kr-spin-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .kr-pct-label { font-size: 11px; color: var(--muted); }
+
+  .add-kr-row { padding: 8px 20px; }
+  .add-kr-btn {
+    background: var(--surface2); border: 1px solid var(--accent); color: var(--accent);
+    cursor: pointer; font-family: 'Lato', sans-serif; font-size: 12px; font-weight: 700;
+    padding: 6px 14px; border-radius: 4px; transition: all 0.15s; letter-spacing: 0.3px;
+  }
+  .add-kr-btn:hover { background: var(--accent); color: #fff; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 100;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 28px; width: 420px; max-width: 90vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .modal h2 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 20px; color: var(--accent); }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .form-group input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Lato', sans-serif; font-size: 14px;
+    padding: 9px 12px; border-radius: 6px; outline: none; transition: border-color 0.15s;
+  }
+  .form-group input:focus { border-color: var(--accent); }
+  .color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+  .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.15s; }
+  .color-dot.selected { border-color: var(--text); transform: scale(1.15); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+  .btn { padding: 8px 18px; border-radius: 6px; font-family: 'Lato', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.15s; border: none; }
+  .btn-ghost { background: none; border: 1px solid var(--border); color: var(--muted); }
+  .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+  .btn-primary { background: var(--accent); color: #fff; font-weight: 700; }
+  .btn-primary:hover { opacity: 0.85; }
+
+  /* FAB */
+  .fab {
+    position: fixed; bottom: 32px; right: 40px;
+    background: var(--accent); color: #fff; border: none; border-radius: 50px;
+    padding: 12px 22px; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 20px rgba(160,120,64,0.4); transition: all 0.2s;
+  }
+  .fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(160,120,64,0.5); }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); border: 1px dashed var(--border); border-radius: 10px; }
+  .empty p { margin-top: 10px; font-size: 13px; }
+  .loading-screen { display: flex; align-items: center; justify-content: center; padding: 60px; color: var(--muted); gap: 10px; }
+
+  @media (max-width: 600px) {
+    header { padding: 20px 16px 16px; }
+    .stats-bar { padding: 0 16px; }
+    .main { padding: 0 16px; }
+    .fab { bottom: 20px; right: 16px; padding: 10px 18px; font-size: 13px; }
+    .kr-bar-wrap { display: none; }
+    .stat { padding: 12px 10px; }
+    .stat-value { font-size: 18px; }
+    .kr-spinner input[type=number] {
+      width: 56px; font-size: 16px; padding: 6px 4px;
+      height: 36px;
+    }
+    .kr-spin-btn { width: 24px; height: 18px; font-size: 11px; }
+    .kr-text { font-size: 13px; }
+    .kr-row { padding: 12px 12px; gap: 8px; }
+    .kr-progress-area { gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>OKR <span>/ Personal</span></h1>
+  <div class="header-right">
+    <div class="sync-status">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncLabel">—</span>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
+    <div class="period-select">
+      <select id="periodSelect" onchange="changePeriod()">
+        <optgroup label="— Trimestre —">
+          <option value="Q1-2025">Q1 2025</option>
+          <option value="Q2-2025">Q2 2025</option>
+          <option value="Q3-2025">Q3 2025</option>
+          <option value="Q4-2025">Q4 2025</option>
+          <option value="Q1-2026" selected>Q1 2026</option>
+          <option value="Q2-2026">Q2 2026</option>
+          <option value="Q3-2026">Q3 2026</option>
+          <option value="Q4-2026">Q4 2026</option>
+        </optgroup>
+        <optgroup label="— Luni 2026 —">
+          <option value="Ian-2026">Ianuarie 2026</option>
+          <option value="Feb-2026">Februarie 2026</option>
+          <option value="Mar-2026">Martie 2026</option>
+          <option value="Apr-2026">Aprilie 2026</option>
+          <option value="Mai-2026">Mai 2026</option>
+          <option value="Iun-2026">Iunie 2026</option>
+          <option value="Iul-2026">Iulie 2026</option>
+          <option value="Aug-2026">August 2026</option>
+          <option value="Sep-2026">Septembrie 2026</option>
+          <option value="Oct-2026">Octombrie 2026</option>
+          <option value="Nov-2026">Noiembrie 2026</option>
+          <option value="Dec-2026">Decembrie 2026</option>
+        </optgroup>
+      </select>
+    </div>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-label">Obiective</div><div class="stat-value" id="statObj">—</div></div>
+  <div class="stat"><div class="stat-label">Key Results</div><div class="stat-value green" id="statKR">—</div></div>
+  <div class="stat"><div class="stat-label">Progres mediu</div><div class="stat-value pink" id="statAvg">—</div></div>
+  <div class="stat"><div class="stat-label">Finalizate ✓</div><div class="stat-value" id="statDone">—</div></div>
+</div>
+
+<div class="main" id="mainContent">
+  <div class="loading-screen">
+    <div class="sync-dot loading" style="width:10px;height:10px"></div>
+    Se încarcă datele...
+  </div>
+</div>
+
+<!-- MODAL OBIECTIV -->
+<div class="modal-overlay" id="objModal">
+  <div class="modal">
+    <h2 id="objModalTitle">Obiectiv nou</h2>
+    <div class="form-group">
+      <label>Ce vrei să realizezi?</label>
+      <input type="text" id="objTitleInput" placeholder="ex: Devin mai sănătos și activ" />
+    </div>
+    <div class="form-group">
+      <label>Culoare</label>
+      <div class="color-picker" id="colorPicker"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeObjModal()">Anulează</button>
+      <button class="btn btn-primary" onclick="saveObjective()">Salvează</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL KEY RESULT -->
+<div class="modal-overlay" id="krModal">
+  <div class="modal">
+    <h2 id="krModalTitle">Key Result</h2>
+    <div class="form-group">
+      <label>Descriere</label>
+      <input type="text" id="krTextInput" placeholder="ex: Alerg 3x/săptămână timp de 8 săptămâni" />
+    </div>
+    <div class="form-group">
+      <label>Progres (%)</label>
+      <input type="number" id="krProgressInput" min="0" max="100" value="0" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeKrModal()">Anulează</button>
+      <button class="btn btn-primary" onclick="saveKr()">Salvează</button>
+    </div>
+  </div>
+</div>
+<button class="fab" onclick="openObjModal()">+ Obiectiv</button>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyGu96K4_SHFP-zVIca6nBy7nVSzibzlhp7bkou47AqB1z4Ycsn1V_kJumJPpBpj9SV/exec';
+const COLORS = ['#c8a96e','#7ec8a9','#c87e9a','#7eaac8','#a97ec8','#c8c87e','#c87e7e','#7ec8c8'];
+
+let currentPeriod = 'Q1-2026';
+let data = { objectives: [] };
+let editingObjId = null;
+let editingKrObjId = null;
+let editingKrId = null;
+let selectedColor = COLORS[0];
+let collapsedObjs = {};
+let saveTimer = null;
+let isLight = false;
+
+function setSyncStatus(state, label) {
+  document.getElementById('syncDot').className = 'sync-dot ' + state;
+  document.getElementById('syncLabel').textContent = label;
+}
+
+function toggleTheme() {
+  isLight = !isLight;
+  document.body.classList.toggle('light', isLight);
+  document.getElementById('themeBtn').textContent = isLight ? '🌙 Dark' : '☀ Light';
+  localStorage.setItem('okr_theme', isLight ? 'light' : 'dark');
+}
+
+async function loadFromSheets(period) {
+  setSyncStatus('loading', 'Se încarcă...');
+  // Incearca mai intai din localStorage pentru raspuns rapid
+  const cached = localStorage.getItem('okr_' + period);
+  if (cached) {
+    try {
+      data = JSON.parse(cached);
+      render();
+      setSyncStatus('ok', 'Sincronizat (cache)');
+    } catch(e) {}
+  }
+  // Apoi sincronizeaza cu Sheets in background
+  try {
+    const res = await fetch(API_URL + '?quarter=' + encodeURIComponent(period), { redirect: 'follow' });
+    const text = await res.text();
+    let json;
+    try { json = JSON.parse(text); } catch(e) { json = null; }
+    if (json && json.objectives) {
+      data = json;
+      localStorage.setItem('okr_' + period, JSON.stringify(data));
+      render();
+      setSyncStatus('ok', 'Sincronizat');
+    }
+  } catch(e) {
+    if (!cached) {
+      data = { objectives: [] };
+      render();
+    }
+    setSyncStatus('err', 'Offline - date locale');
+  }
+}
+
+async function saveToSheets() {
+  setSyncStatus('loading', 'Se salvează...');
+  localStorage.setItem('okr_' + currentPeriod, JSON.stringify(data));
+  try {
+    const payload = encodeURIComponent(JSON.stringify(data));
+    const url = API_URL + '?action=save&quarter=' + currentPeriod + '&data=' + payload;
+    await fetch(url);
+    setSyncStatus('ok', 'Salvat ✓');
+  } catch(e) {
+    setSyncStatus('err', 'Eroare salvare');
+  }
+}
+
+function debouncedSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => saveToSheets(), 800);
+}
+
+function changePeriod() {
+  currentPeriod = document.getElementById('periodSelect').value;
+  collapsedObjs = {};
+  loadFromSheets(currentPeriod);
+}
+
+function render() {
+  const container = document.getElementById('mainContent');
+  const objs = data.objectives || [];
+  if (objs.length === 0) {
+    container.innerHTML = `<div class="empty"><div style="font-size:32px">◎</div><p>Niciun obiectiv pentru ${currentPeriod}.<br>Apasă <strong>+ Obiectiv</strong> pentru a începe.</p></div>`;
+    updateStats(); return;
+  }
+  container.innerHTML = objs.map(obj => renderObjective(obj)).join('');
+  updateStats();
+}
+
+function renderObjective(obj) {
+  const krs = obj.keyResults || [];
+  const avgPct = krs.length ? Math.round(krs.reduce((s,k) => s + (k.progress||0), 0) / krs.length) : 0;
+  const collapsed = collapsedObjs[obj.id];
+  const barColor = obj.color || COLORS[0];
+  return `
+  <div class="objective-card" id="obj-${obj.id}">
+    <div class="obj-header" onclick="toggleCollapse('${obj.id}')">
+      <div class="obj-color" style="background:${barColor}"></div>
+      <div class="obj-title">${esc(obj.title)}</div>
+      <div class="obj-progress-pill">${avgPct}%</div>
+      <div class="obj-actions" onclick="event.stopPropagation()">
+        <button class="icon-btn" onclick="openObjModal('${obj.id}')" title="Editează">✎</button>
+        <button class="icon-btn danger" onclick="deleteObj('${obj.id}')" title="Șterge">✕</button>
+      </div>
+    </div>
+    <div class="obj-progress-bar-wrap">
+      <div class="obj-progress-bar" style="width:${avgPct}%;background:${barColor}"></div>
+    </div>
+    <div class="key-results ${collapsed ? 'collapsed' : ''}">
+      ${krs.map(kr => renderKR(obj.id, kr)).join('')}
+      <div class="add-kr-row"><button class="add-kr-btn" onclick="openKrModal('${obj.id}')">+ key result</button></div>
+    </div>
+  </div>`;
+}
+
+function renderKR(objId, kr) {
+  const pct = kr.progress || 0;
+  const color = pct >= 70 ? '#7ec8a9' : pct >= 35 ? '#c8a96e' : '#c87e7e';
+  return `
+  <div class="kr-row">
+    <div class="kr-bullet" style="background:${color}"></div>
+    <div class="kr-text">${esc(kr.text)}</div>
+    <div class="kr-progress-area">
+      <div class="kr-bar-wrap"><div class="kr-bar" style="width:${pct}%;background:${color}"></div></div>
+      <div class="kr-spinner">
+        <div class="kr-spinner-btns">
+          <button class="kr-spin-btn" onclick="stepKr('${objId}','${kr.id}',1)">▲</button>
+          <button class="kr-spin-btn" onclick="stepKr('${objId}','${kr.id}',-1)">▼</button>
+        </div>
+        <input type="number" min="0" max="100" value="${pct}" inputmode="numeric"
+          onfocus="this.select()"
+          onblur="let v=parseInt(this.value); if(isNaN(v)||v<0)v=0; if(v>100)v=100; this.value=v; updateKrProgress('${objId}','${kr.id}',v)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
+        <span class="kr-pct-label">%</span>
+      </div>
+      <button class="icon-btn" onclick="openKrModal('${objId}','${kr.id}')" title="Editează">✎</button>
+      <button class="icon-btn danger" onclick="deleteKr('${objId}','${kr.id}')" title="Șterge">✕</button>
+    </div>
+  </div>`;
+}
+
+function stepKr(objId, krId, delta) {
+  const obj = data.objectives.find(o=>o.id===objId);
+  const kr = obj.keyResults.find(k=>k.id===krId);
+  kr.progress = Math.min(100, Math.max(0, (kr.progress||0) + delta));
+  render(); debouncedSave();
+}
+
+function updateStats() {
+  const objs = data.objectives || [];
+  const allKrs = objs.flatMap(o => o.keyResults || []);
+  const avg = allKrs.length ? Math.round(allKrs.reduce((s,k) => s+(k.progress||0),0)/allKrs.length) : 0;
+  const done = objs.filter(o => { const k=o.keyResults||[]; return k.length>0&&k.every(k=>k.progress>=100); }).length;
+  document.getElementById('statObj').textContent = objs.length;
+  document.getElementById('statKR').textContent = allKrs.length;
+  document.getElementById('statAvg').textContent = avg + '%';
+  document.getElementById('statDone').textContent = done;
+}
+
+function toggleCollapse(id) { collapsedObjs[id]=!collapsedObjs[id]; render(); }
+
+function updateKrProgress(objId, krId, val) {
+  data.objectives.find(o=>o.id===objId).keyResults.find(k=>k.id===krId).progress = parseInt(val);
+  render(); debouncedSave();
+}
+
+function deleteObj(objId) {
+  if (!confirm('Ștergi obiectivul și toate key results-urile sale?')) return;
+  data.objectives = data.objectives.filter(o=>o.id!==objId);
+  render(); debouncedSave();
+}
+
+function deleteKr(objId, krId) {
+  const obj = data.objectives.find(o=>o.id===objId);
+  obj.keyResults = obj.keyResults.filter(k=>k.id!==krId);
+  render(); debouncedSave();
+}
+
+function openObjModal(objId) {
+  editingObjId = objId||null; selectedColor = COLORS[0];
+  const input = document.getElementById('objTitleInput');
+  document.getElementById('objModalTitle').textContent = objId ? 'Editează obiectiv' : 'Obiectiv nou';
+  if (objId) {
+    const obj = data.objectives.find(o=>o.id===objId);
+    input.value = obj.title; selectedColor = obj.color||COLORS[0];
+  } else { input.value=''; }
+  document.getElementById('colorPicker').innerHTML = COLORS.map(c=>
+    `<div class="color-dot ${c===selectedColor?'selected':''}" style="background:${c}" onclick="selectColor('${c}')"></div>`
+  ).join('');
+  document.getElementById('objModal').classList.add('active');
+  setTimeout(()=>input.focus(),100);
+}
+
+function selectColor(c) {
+  selectedColor=c;
+  document.querySelectorAll('.color-dot').forEach(d=>{
+    d.classList.toggle('selected', rgbToHex(d.style.background)===c);
+  });
+}
+
+function rgbToHex(rgb) {
+  const m=rgb.match(/\d+/g); if(!m) return rgb;
+  return '#'+m.slice(0,3).map(x=>parseInt(x).toString(16).padStart(2,'0')).join('');
+}
+
+function closeObjModal() { document.getElementById('objModal').classList.remove('active'); editingObjId=null; }
+
+function saveObjective() {
+  const title=document.getElementById('objTitleInput').value.trim(); if(!title) return;
+  if (editingObjId) {
+    const obj=data.objectives.find(o=>o.id===editingObjId); obj.title=title; obj.color=selectedColor;
+  } else { data.objectives.push({id:uid(),title,color:selectedColor,keyResults:[]}); }
+  closeObjModal(); render(); debouncedSave();
+}
+
+function openKrModal(objId, krId) {
+  editingKrObjId=objId; editingKrId=krId||null;
+  const input=document.getElementById('krTextInput'), prog=document.getElementById('krProgressInput');
+  document.getElementById('krModalTitle').textContent = krId ? 'Editează Key Result' : 'Key Result nou';
+  if (krId) {
+    const kr=data.objectives.find(o=>o.id===objId).keyResults.find(k=>k.id===krId);
+    input.value=kr.text; prog.value=kr.progress||0;
+  } else { input.value=''; prog.value=0; }
+  document.getElementById('krModal').classList.add('active');
+  setTimeout(()=>input.focus(),100);
+}
+
+function closeKrModal() { document.getElementById('krModal').classList.remove('active'); }
+
+function saveKr() {
+  const text=document.getElementById('krTextInput').value.trim(); if(!text) return;
+  const progress=Math.min(100,Math.max(0,parseInt(document.getElementById('krProgressInput').value)||0));
+  const obj=data.objectives.find(o=>o.id===editingKrObjId);
+  if (editingKrId) {
+    const kr=obj.keyResults.find(k=>k.id===editingKrId); kr.text=text; kr.progress=progress;
+  } else { obj.keyResults.push({id:uid(),text,progress}); }
+  closeKrModal(); render(); debouncedSave();
+}
+
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){closeObjModal();closeKrModal();}
+  if(e.key==='Enter'){
+    if(document.getElementById('objModal').classList.contains('active')) saveObjective();
+    if(document.getElementById('krModal').classList.contains('active')) saveKr();
+  }
+});
+
+// INIT
+const savedTheme = localStorage.getItem('okr_theme');
+if (savedTheme === 'light') { isLight=true; document.body.classList.add('light'); document.getElementById('themeBtn').textContent='🌙 Dark'; }
+document.getElementById('periodSelect').value = currentPeriod;
+loadFromSheets(currentPeriod);
+</script>
+</body>
+</html>
