@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -92,20 +93,97 @@
   .sync-dot.loading { background: var(--accent); animation: pulse 1s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-  /* PERIOD SELECT */
-  .period-select {
+  /* PERIOD DROPDOWN */
+  .period-select-wrap { position: relative; }
+  .pd-dropdown { position: relative; }
+  .pd-trigger {
     display: flex; align-items: center; gap: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 12px;
-  }
-  .period-select select {
-    background: transparent; border: none;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 14px;
     color: var(--text); font-family: 'Lato', sans-serif;
-    font-size: 12px; cursor: pointer; outline: none;
+    font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
   }
-  .period-select select option { background: var(--surface2); }
+  .pd-trigger:hover { border-color: var(--accent); }
+  .pd-dropdown.open .pd-trigger { border-color: var(--accent); }
+  .pd-arrow { color: var(--muted); font-size: 10px; margin-left: 2px; transition: transform 0.15s; }
+  .pd-dropdown.open .pd-arrow { transform: rotate(180deg); }
+  .pd-menu {
+    display: none; position: absolute; top: calc(100% + 6px); right: 0;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px; min-width: 215px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35); z-index: 200;
+    max-height: 400px; overflow-y: auto;
+  }
+  .pd-dropdown.open .pd-menu { display: block; }
+  .pd-group { margin-bottom: 4px; }
+  .pd-group:last-child { margin-bottom: 0; }
+  .pd-group-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 7px 8px 3px; }
+  .pd-option {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 5px;
+    cursor: pointer; transition: background 0.1s; font-size: 12px; color: var(--text);
+  }
+  .pd-option:hover { background: var(--bg); }
+  .pd-option.active { background: color-mix(in srgb, var(--accent) 13%, var(--surface2)); color: var(--accent); font-weight: 700; }
+  .pd-dot, .pd-trigger-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .pd-dot.past, .pd-trigger-dot.past { background: var(--muted); }
+  .pd-dot.current, .pd-trigger-dot.current { background: var(--accent2); box-shadow: 0 0 5px var(--accent2); }
+  .pd-dot.future, .pd-trigger-dot.future { background: transparent; border: 1.5px solid var(--muted); }
+  .pd-opt-label { flex: 1; }
+  .pd-data-badge { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: var(--accent); opacity: 0.85; text-transform: uppercase; }
+
+  /* TIMELINE PROTOCOL */
+  .timeline-protocol {
+    display: flex; flex-wrap: wrap; gap: 4px 20px;
+    padding: 8px 14px; margin-bottom: 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; font-size: 11px;
+  }
+  .tp-item { display: flex; gap: 5px; align-items: center; }
+  .tp-label { color: var(--muted); }
+  .tp-val { color: var(--text); }
+
+  /* READ-ONLY BANNER */
+  .readonly-banner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; margin-bottom: 14px;
+    background: color-mix(in srgb, var(--muted) 5%, var(--bg));
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 12px; color: var(--muted);
+  }
+  .btn-danger-ghost {
+    background: none; border: 1px solid var(--danger); color: var(--danger);
+    font-family: 'Lato', sans-serif; font-size: 11px; font-weight: 700;
+    padding: 4px 12px; border-radius: 4px; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-danger-ghost:hover { background: var(--danger); color: #fff; }
+  .obj-readonly { opacity: 0.82; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 0;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
   /* STATS */
   .stats-bar { display: flex; gap: 1px; padding: 0 40px; margin: 24px 0; }
@@ -161,7 +239,6 @@
   .kr-progress-area { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .kr-bar-wrap { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .kr-bar { height: 100%; border-radius: 2px; transition: width 0.3s; }
-
   .kr-spinner { display: flex; align-items: center; gap: 4px; }
   .kr-spinner input[type=number] {
     width: 48px; background: var(--surface2); border: 1px solid var(--border);
@@ -181,7 +258,6 @@
   }
   .kr-spin-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
   .kr-pct-label { font-size: 11px; color: var(--muted); }
-
   .add-kr-row { padding: 8px 20px; }
   .add-kr-btn {
     background: var(--surface2); border: 1px solid var(--accent); color: var(--accent);
@@ -206,12 +282,13 @@
   .modal h2 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 20px; color: var(--accent); }
   .form-group { margin-bottom: 16px; }
   .form-group label { display: block; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .form-group input {
+  .form-group input, .form-group textarea {
     width: 100%; background: var(--bg); border: 1px solid var(--border);
     color: var(--text); font-family: 'Lato', sans-serif; font-size: 14px;
     padding: 9px 12px; border-radius: 6px; outline: none; transition: border-color 0.15s;
+    resize: vertical;
   }
-  .form-group input:focus { border-color: var(--accent); }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
   .color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
   .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.15s; }
   .color-dot.selected { border-color: var(--text); transform: scale(1.15); }
@@ -234,8 +311,256 @@
   /* EMPTY */
   .empty { text-align: center; padding: 60px 20px; color: var(--muted); border: 1px dashed var(--border); border-radius: 10px; }
   .empty p { margin-top: 10px; font-size: 13px; }
+  .empty-actions { margin-top: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
   .loading-screen { display: flex; align-items: center; justify-content: center; padding: 60px; color: var(--muted); gap: 10px; }
 
+  /* IMPORT MODAL */
+  .import-period-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
+  .import-period-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border: 1px solid var(--border);
+    border-radius: 6px; cursor: pointer; transition: all 0.15s;
+    background: var(--bg);
+  }
+  .import-period-row:hover { border-color: var(--accent); background: var(--surface); }
+  .import-period-name { flex: 1; font-weight: 700; font-size: 14px; color: var(--text); }
+  .import-period-meta { font-size: 11px; color: var(--muted); }
+  .import-period-arrow { color: var(--accent); font-size: 16px; }
+  .import-empty { text-align: center; padding: 24px; color: var(--muted); font-size: 13px; font-style: italic; }
+  .import-subtitle { color: var(--muted); font-size: 13px; margin-bottom: 16px; line-height: 1.5; }
+
+  /* ─── WEEK TODO ─── */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px 16px;
+    gap: 12px;
+  }
+  .week-nav-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+  .week-nav-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--text);
+    text-align: center;
+  }
+  .week-today-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Lato', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .week-today-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .week-nav-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    padding: 7px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .week-nav-btn:hover { color: var(--text); border-color: var(--accent); }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(148px, 1fr));
+    gap: 10px;
+    padding: 0 40px 24px;
+    overflow-x: auto;
+    align-items: start;
+  }
+
+  .day-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, background 0.2s;
+    min-height: 200px;
+  }
+  .day-col.drag-over {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  }
+  .day-col.is-today {
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  }
+
+  .day-header {
+    padding: 12px 12px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .day-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .day-col.is-today .day-name { color: var(--accent); }
+  .day-date {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+    letter-spacing: 0.3px;
+  }
+  .day-col.is-today .day-date { color: var(--accent); opacity: 0.8; }
+
+  .task-list {
+    flex: 1;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 50px;
+  }
+
+  .task-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    cursor: grab;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    transition: border-color 0.15s, opacity 0.15s;
+    user-select: none;
+    position: relative;
+  }
+  .task-card:hover { border-color: color-mix(in srgb, var(--accent) 60%, var(--border)); }
+  .task-card.dragging { opacity: 0.35; cursor: grabbing; }
+  .task-card.drop-before { border-top: 2px solid var(--accent); margin-top: -1px; }
+  .task-card.drop-after  { border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
+  #touch-ghost {
+    position: fixed; z-index: 9999; pointer-events: none;
+    opacity: 0.88; transform: rotate(2deg) scale(1.03);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+    border-radius: 8px; transition: none;
+  }
+  .task-card.done .task-text {
+    text-decoration: line-through;
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .task-check {
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+  .task-text {
+    flex: 1;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--text);
+    word-break: break-word;
+  }
+  .task-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .task-card:hover .task-actions { opacity: 1; }
+  .task-icon-btn {
+    background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 10px; padding: 1px 3px;
+    border-radius: 3px; transition: color 0.15s; line-height: 1.2;
+  }
+  .task-icon-btn:hover { color: var(--text); }
+  .task-icon-btn.danger:hover { color: var(--danger); }
+
+  .day-add-btn {
+    margin: 0 8px 8px;
+    background: none;
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    width: calc(100% - 16px);
+  }
+  .day-add-btn:hover { color: var(--accent); border-color: var(--accent); border-style: solid; }
+
+  /* BACKLOG */
+  .backlog-section {
+    padding: 4px 40px 40px;
+  }
+  .backlog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .backlog-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--text);
+  }
+  .backlog-count {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 8px;
+  }
+  .backlog-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-height: 80px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-content: flex-start;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .backlog-list.drag-over {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+  }
+  .backlog-empty {
+    color: var(--muted);
+    font-size: 12px;
+    padding: 8px 4px;
+    font-style: italic;
+  }
+
+  /* BACKLOG tasks use same .task-card style but wider */
+  .backlog-list .task-card {
+    width: calc(25% - 6px);
+    min-width: 180px;
+  }
+
+  @media (max-width: 900px) {
+    .backlog-list .task-card { width: calc(50% - 4px); }
+  }
   @media (max-width: 600px) {
     header { padding: 20px 16px 16px; }
     .stats-bar { padding: 0 16px; }
@@ -244,74 +569,239 @@
     .kr-bar-wrap { display: none; }
     .stat { padding: 12px 10px; }
     .stat-value { font-size: 18px; }
-    .kr-spinner input[type=number] {
-      width: 56px; font-size: 16px; padding: 6px 4px;
-      height: 36px;
-    }
+    .kr-spinner input[type=number] { width: 56px; font-size: 16px; padding: 6px 4px; height: 36px; }
     .kr-spin-btn { width: 24px; height: 18px; font-size: 11px; }
     .kr-text { font-size: 13px; }
     .kr-row { padding: 12px 12px; gap: 8px; }
     .kr-progress-area { gap: 6px; }
-    .tab-bar { padding: 0 16px; }
-    .notes-area { padding: 0 16px; }
+    .tabs { padding: 0 16px; }
+    .week-nav { padding: 16px 16px 12px; }
+    .week-grid { padding: 0 16px 16px; }
+    .backlog-section { padding: 4px 16px 40px; }
+    .backlog-list .task-card { width: 100%; min-width: unset; }
   }
 
-  /* TABS */
-  .tab-bar {
+  /* ═══════════════════════════
+     NOTES TAB
+  ═══════════════════════════ */
+  #notes-tab {
     display: flex;
-    padding: 0 40px;
+    height: calc(100vh - 112px);
+    overflow: hidden;
+  }
+  .notes-sidebar {
+    width: 220px;
+    min-width: 160px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+  }
+  .notes-sidebar-header {
+    padding: 14px 16px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid var(--border);
   }
-  .tab-btn {
+  .notes-sidebar-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .notes-add-page-btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .notes-add-page-btn:hover { opacity: .85; }
+  .notes-page-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 0;
+  }
+  .notes-page-item {
+    padding: 9px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text);
+    border-left: 3px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .notes-page-item:hover { background: var(--surface2); }
+  .notes-page-item.active {
+    border-left-color: var(--accent);
+    background: var(--surface2);
+    font-weight: 600;
+  }
+  .notes-page-item-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .notes-page-del {
+    opacity: 0;
+    font-size: 13px;
+    color: var(--muted);
     background: none;
     border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--muted);
-    font-family: 'Lato', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 14px 20px;
     cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-    margin-bottom: -1px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    line-height: 1;
   }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-  /* NOTES */
-  .notes-area { padding: 24px 40px; }
-  .notes-area textarea {
-    width: 100%;
-    min-height: 520px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'Lato', sans-serif;
-    font-size: 14px;
-    line-height: 1.75;
-    padding: 20px;
-    outline: none;
-    resize: vertical;
-    transition: border-color 0.2s;
-  }
-  .notes-area textarea:focus { border-color: var(--accent); }
-  .notes-hint {
-    font-size: 11px;
+  .notes-page-item:hover .notes-page-del { opacity: 1; }
+  .notes-page-del:hover { color: var(--danger); background: var(--surface); }
+  .notes-sidebar-empty {
+    padding: 18px 16px;
     color: var(--muted);
-    margin-top: 8px;
-    text-align: right;
-    letter-spacing: 0.3px;
+    font-size: 13px;
+    font-style: italic;
   }
 
-  /* PASSWORD ERROR */
-  .pwd-error {
-    color: var(--danger);
-    font-size: 12px;
-    margin-top: 8px;
-    min-height: 18px;
+  .notes-editor-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .notes-toolbar {
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-wrap: wrap;
+    background: var(--surface);
+  }
+  .ntb {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text);
+    transition: background .12s;
+    white-space: nowrap;
+    font-family: 'Lato', sans-serif;
+    line-height: 1.4;
+  }
+  .ntb:hover { background: var(--surface2); border-color: var(--border); }
+  .ntb.ntb-active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .ntb-sep { width: 1px; height: 18px; background: var(--border); margin: 0 3px; flex-shrink: 0; }
+  .ntb-color {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2.5px solid transparent;
+    cursor: pointer;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .ntb-color:hover, .ntb-color.ntb-active { border-color: var(--text); }
+
+  .notes-editor {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 40px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text);
+    outline: none;
+    background: var(--bg);
+  }
+  .notes-editor:empty::before {
+    content: 'Începe să scrii…';
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .notes-editor h1 { font-family: 'Playfair Display', serif; font-size: 2em; font-weight: 700; margin: .5em 0 .2em; color: var(--accent); }
+  .notes-editor h2 { font-size: 1.45em; font-weight: 700; margin: .5em 0 .2em; }
+  .notes-editor h3 { font-size: 1.15em; font-weight: 600; margin: .4em 0 .15em; }
+  .notes-editor ul, .notes-editor ol { padding-left: 1.6em; margin: .25em 0; }
+  .notes-editor ul ul, .notes-editor ol ol,
+  .notes-editor ul ol, .notes-editor ol ul { padding-left: 1.6em; }
+  .notes-editor table {
+    border-collapse: collapse;
+    margin: 10px 0;
+    width: 100%;
+    font-size: 14px;
+    table-layout: fixed;
+  }
+  .notes-editor table td, .notes-editor table th {
+    border: 1px solid var(--border);
+    padding: 7px 11px;
+    min-width: 40px;
+    vertical-align: top;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    position: relative;
+  }
+  .notes-editor table th {
+    background: var(--surface2);
+    font-weight: 600;
+  }
+  .notes-editor table td:focus, .notes-editor table th:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  .col-resizer {
+    position: absolute;
+    top: 0; right: -3px;
+    width: 6px; height: 100%;
+    cursor: col-resize;
+    z-index: 2;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+  .col-resizer:hover, .col-resizer.resizing { background: rgba(200,169,110,0.45); }
+
+  .notes-no-page {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .notes-page-title-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    padding: 16px 40px 12px;
+    outline: none;
+  }
+  .notes-page-title-input::placeholder { color: var(--muted); }
+  .notes-page-title-input:focus { border-bottom-color: var(--accent); }
+
+  /* table-insert modal */
+  .tbl-modal-row { display: flex; gap: 16px; }
+  .tbl-modal-row .form-group { flex: 1; margin-bottom: 0; }
+
+  @media(max-width:600px) {
+    #notes-tab { flex-direction: column; height: auto; }
+    .notes-sidebar { width: 100%; min-width: unset; max-height: 180px; border-right: none; border-bottom: 1px solid var(--border); }
+    .notes-editor { padding: 16px 18px; }
   }
 </style>
 </head>
@@ -320,70 +810,140 @@
 <header>
   <h1>OKR <span>/ Personal</span></h1>
   <div class="header-right">
-    <div class="sync-status">
+    <div class="sync-status" id="syncStatusWrap">
       <div class="sync-dot" id="syncDot"></div>
       <span id="syncLabel">—</span>
     </div>
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
-    <div class="period-select">
-      <select id="periodSelect" onchange="changePeriod()">
-        <optgroup label="— Trimestre —">
-          <option value="Q1-2025">Q1 2025</option>
-          <option value="Q2-2025">Q2 2025</option>
-          <option value="Q3-2025">Q3 2025</option>
-          <option value="Q4-2025">Q4 2025</option>
-          <option value="Q1-2026" selected>Q1 2026</option>
-          <option value="Q2-2026">Q2 2026</option>
-          <option value="Q3-2026">Q3 2026</option>
-          <option value="Q4-2026">Q4 2026</option>
-        </optgroup>
-        <optgroup label="— Luni 2026 —">
-          <option value="Ian-2026">Ianuarie 2026</option>
-          <option value="Feb-2026">Februarie 2026</option>
-          <option value="Mar-2026">Martie 2026</option>
-          <option value="Apr-2026">Aprilie 2026</option>
-          <option value="Mai-2026">Mai 2026</option>
-          <option value="Iun-2026">Iunie 2026</option>
-          <option value="Iul-2026">Iulie 2026</option>
-          <option value="Aug-2026">August 2026</option>
-          <option value="Sep-2026">Septembrie 2026</option>
-          <option value="Oct-2026">Octombrie 2026</option>
-          <option value="Nov-2026">Noiembrie 2026</option>
-          <option value="Dec-2026">Decembrie 2026</option>
-        </optgroup>
-      </select>
+    <div class="period-select-wrap" id="periodSelectWrap">
+      <div class="pd-dropdown" id="pdDropdown">
+        <button class="pd-trigger" onclick="togglePeriodDropdown(); event.stopPropagation()">
+          <span class="pd-trigger-dot" id="pdDot"></span>
+          <span id="pdLabel">Q1 2026</span>
+          <span class="pd-arrow">▾</span>
+        </button>
+        <div class="pd-menu" id="pdMenu"></div>
+      </div>
     </div>
   </div>
 </header>
 
-<!-- TAB BAR -->
-<div class="tab-bar">
-  <button class="tab-btn active" id="tabOkr" onclick="switchTab('okr')">OKR</button>
-  <button class="tab-btn" id="tabNotes" onclick="switchTab('notes')">Notes</button>
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('okr')" id="tab-okr-btn">OKR</button>
+  <button class="tab-btn" onclick="switchTab('todo')" id="tab-todo-btn">ToDo</button>
+  <button class="tab-btn" onclick="switchTab('notes')" id="tab-notes-btn">Notes</button>
 </div>
 
-<!-- PANEL OKR -->
-<div id="panelOkr">
-<div class="stats-bar">
-  <div class="stat"><div class="stat-label">Obiective</div><div class="stat-value" id="statObj">—</div></div>
-  <div class="stat"><div class="stat-label">Key Results</div><div class="stat-value green" id="statKR">—</div></div>
-  <div class="stat"><div class="stat-label">Progres mediu</div><div class="stat-value pink" id="statAvg">—</div></div>
-  <div class="stat"><div class="stat-label">Finalizate ✓</div><div class="stat-value" id="statDone">—</div></div>
-</div>
-
-<div class="main" id="mainContent">
-  <div class="loading-screen">
-    <div class="sync-dot loading" style="width:10px;height:10px"></div>
-    Se încarcă datele...
+<!-- ── OKR TAB ── -->
+<div id="okr-tab">
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-label">Obiective</div><div class="stat-value" id="statObj">—</div></div>
+    <div class="stat"><div class="stat-label">Key Results</div><div class="stat-value green" id="statKR">—</div></div>
+    <div class="stat"><div class="stat-label">Progres mediu</div><div class="stat-value pink" id="statAvg">—</div></div>
+    <div class="stat"><div class="stat-label">Finalizate ✓</div><div class="stat-value" id="statDone">—</div></div>
+  </div>
+  <div class="main" id="mainContent">
+    <div class="loading-screen">
+      <div class="sync-dot loading" style="width:10px;height:10px"></div>
+      Se încarcă datele...
+    </div>
   </div>
 </div>
-</div><!-- /panelOkr -->
 
-<!-- PANEL NOTES -->
-<div id="panelNotes" style="display:none">
-  <div class="notes-area">
-    <textarea id="notesTextarea" placeholder="Notițe personale..." oninput="onNotesChange()"></textarea>
-    <div class="notes-hint" id="notesHint">Auto-salvare activă</div>
+<!-- ── TODO TAB ── -->
+<div id="todo-tab" style="display:none">
+  <div class="week-nav">
+    <button class="week-nav-btn" onclick="prevWeek()">← Anterior</button>
+    <div class="week-nav-center">
+      <div class="week-nav-title" id="weekNavTitle"></div>
+      <button class="week-today-btn" onclick="todayWeek()">Săptămâna curentă</button>
+    </div>
+    <button class="week-nav-btn" onclick="nextWeek()">Următor →</button>
+  </div>
+  <div class="week-grid" id="weekGrid"></div>
+  <div class="backlog-section">
+    <div class="backlog-header">
+      <div>
+        <span class="backlog-title">Backlog</span>
+        <span class="backlog-count" id="backlogCount"></span>
+      </div>
+      <button class="add-kr-btn" onclick="openTaskModal(null,'backlog','backlog')">+ adaugă activitate</button>
+    </div>
+    <div class="backlog-list" id="backlogList"
+      ondragover="event.preventDefault(); this.classList.add('drag-over')"
+      ondragleave="if(!this.contains(event.relatedTarget)) this.classList.remove('drag-over')"
+      ondrop="dropOnBacklog(event)">
+    </div>
+  </div>
+</div>
+
+<!-- ── NOTES TAB ── -->
+<div id="notes-tab" style="display:none">
+  <div class="notes-sidebar">
+    <div class="notes-sidebar-header">
+      <span class="notes-sidebar-title">Pagini</span>
+      <button class="notes-add-page-btn" onclick="addNotesPage()">+</button>
+    </div>
+    <div class="notes-page-list" id="notesPageList">
+      <div class="notes-sidebar-empty">Nicio pagină</div>
+    </div>
+  </div>
+  <div class="notes-editor-wrap" id="notesEditorWrap">
+    <div class="notes-no-page" id="notesNoPage">Selectează sau creează o pagină</div>
+    <div id="notesEditorArea" style="display:none; flex-direction:column; overflow:hidden;">
+      <input class="notes-page-title-input" id="notesTitleInput" placeholder="Titlul paginii" oninput="onNotesTitleChange()" />
+      <div class="notes-toolbar" id="notesToolbar" onmousedown="event.preventDefault()">
+        <button class="ntb" onclick="notesFmt('formatBlock','p')" title="Text normal">¶</button>
+        <button class="ntb" onclick="notesFmt('formatBlock','h1')" title="H1"><b>H1</b></button>
+        <button class="ntb" onclick="notesFmt('formatBlock','h2')" title="H2"><b>H2</b></button>
+        <button class="ntb" onclick="notesFmt('formatBlock','h3')" title="H3"><b>H3</b></button>
+        <span class="ntb-sep"></span>
+        <button class="ntb" onclick="notesFmt('bold')" title="Bold"><b>B</b></button>
+        <button class="ntb" onclick="notesFmt('italic')" title="Italic"><i>I</i></button>
+        <span class="ntb-sep"></span>
+        <button class="ntb" onclick="notesFmt('insertUnorderedList')" title="Listă">• Listă</button>
+        <span class="ntb-sep"></span>
+        <span class="ntb-color" style="background:#c8a96e" onclick="notesFmt('foreColor','#c8a96e')" title="Auriu"></span>
+        <span class="ntb-color" style="background:#7ec8a9" onclick="notesFmt('foreColor','#7ec8a9')" title="Verde"></span>
+        <span class="ntb-color" style="background:#c87e9a" onclick="notesFmt('foreColor','#c87e9a')" title="Roz"></span>
+        <span class="ntb-color" style="background:#7eaac8" onclick="notesFmt('foreColor','#7eaac8')" title="Albastru"></span>
+        <span class="ntb-color" style="background:#e8e4dc" onclick="notesFmt('foreColor','#e8e4dc')" title="Alb"></span>
+        <span class="ntb-sep"></span>
+        <button class="ntb" onclick="openTableModal()" title="Inserează tabel">⊞ Tabel</button>
+        <button class="ntb" id="ntbAddRow" style="display:none" onclick="notesTableAddRow()" title="Adaugă rând">+ Rând</button>
+        <button class="ntb" id="ntbDelRow" style="display:none" onclick="notesTableDelRow()" title="Șterge rând">− Rând</button>
+        <button class="ntb" id="ntbAddCol" style="display:none" onclick="notesTableAddCol()" title="Adaugă coloană">+ Col</button>
+        <button class="ntb" id="ntbDelCol" style="display:none" onclick="notesTableDelCol()" title="Șterge coloană">− Col</button>
+      </div>
+      <div class="notes-editor" id="notesEditor" contenteditable="true"
+           oninput="onNotesEditorChange()"
+           onkeydown="notesEditorKeydown(event)"
+           onmouseup="notesUpdateTableBtns(); notesSaveSelection()"
+           onkeyup="notesUpdateTableBtns(); notesSaveSelection()">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INSERT TABLE -->
+<div class="modal-overlay" id="tableModal">
+  <div class="modal">
+    <h2>Inserează tabel</h2>
+    <div class="tbl-modal-row">
+      <div class="form-group">
+        <label>Rânduri</label>
+        <input type="number" id="tableRowsInput" min="1" max="20" value="3" />
+      </div>
+      <div class="form-group">
+        <label>Coloane</label>
+        <input type="number" id="tableColsInput" min="1" max="10" value="3" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeTableModal()">Anulează</button>
+      <button class="btn btn-primary" onclick="confirmInsertTable()">Inserează</button>
+    </div>
   </div>
 </div>
 
@@ -424,28 +984,140 @@
     </div>
   </div>
 </div>
-<!-- MODAL PAROLĂ NOTES -->
-<div class="modal-overlay" id="notesPasswordModal">
+
+<!-- MODAL IMPORT TIMELINE -->
+<div class="modal-overlay" id="importModal">
   <div class="modal">
-    <h2>Notes — Acces protejat</h2>
-    <div class="form-group">
-      <label>Parolă</label>
-      <input type="password" id="notesPwdInput" placeholder="Introdu parola..."
-        onkeydown="if(event.key==='Enter'){event.preventDefault();submitNotesPassword();}" />
-    </div>
-    <div class="pwd-error" id="notesPwdError"></div>
+    <h2>Importă timeline</h2>
+    <p class="import-subtitle">
+      Copiază structura obiectivelor și key results-urilor în <strong id="importTargetLabel"></strong>.<br>
+      Progresul va fi resetat la 0% pentru noua perioadă.
+    </p>
+    <div class="import-period-list" id="importPeriodList"></div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeNotesPasswordModal()">Anulează</button>
-      <button class="btn btn-primary" onclick="submitNotesPassword()">Deschide</button>
+      <button class="btn btn-ghost" onclick="closeImportModal()">Anulează</button>
     </div>
   </div>
 </div>
 
-<button class="fab" id="fabBtn" onclick="openObjModal()">+ Obiectiv</button>
+<!-- MODAL TASK -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <h2 id="taskModalTitle">Task nou</h2>
+    <div class="form-group">
+      <label>Descriere</label>
+      <textarea id="taskTextInput" rows="3" placeholder="ex: Trimite raportul lunar"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeTaskModal()">Anulează</button>
+      <button class="btn btn-primary" onclick="saveTask()">Salvează</button>
+    </div>
+  </div>
+</div>
+
+<button class="fab" id="fabBtn" onclick="fabClick()">+ Obiectiv</button>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbyGu96K4_SHFP-zVIca6nBy7nVSzibzlhp7bkou47AqB1z4Ycsn1V_kJumJPpBpj9SV/exec';
+/* ═══════════════════════════════════════════════
+   OKR SECTION
+═══════════════════════════════════════════════ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbx8y4WE9txCTfLyDTVW3ooLffhYwe-auNhTWmGjyoGkzF7Cm11r-DNQNmUFjJTCZF5u6Q/exec';
 const COLORS = ['#c8a96e','#7ec8a9','#c87e9a','#7eaac8','#a97ec8','#c8c87e','#c87e7e','#7ec8c8'];
+
+/* ── Period utilities ── */
+const ALL_PERIODS = [
+  { group: 'Trimestre 2025', items: ['Q1-2025','Q2-2025','Q3-2025','Q4-2025'] },
+  { group: 'Trimestre 2026', items: ['Q1-2026','Q2-2026','Q3-2026','Q4-2026'] },
+  { group: 'Luni 2026', items: ['Ian-2026','Feb-2026','Mar-2026','Apr-2026','Mai-2026','Iun-2026','Iul-2026','Aug-2026','Sep-2026','Oct-2026','Nov-2026','Dec-2026'] }
+];
+const MONTH_FULL = { Ian:'Ianuarie', Feb:'Februarie', Mar:'Martie', Apr:'Aprilie', Mai:'Mai', Iun:'Iunie', Iul:'Iulie', Aug:'August', Sep:'Septembrie', Oct:'Octombrie', Nov:'Noiembrie', Dec:'Decembrie' };
+const MONTH_IDX  = { Ian:0, Feb:1, Mar:2, Apr:3, Mai:4, Iun:5, Iul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+const Q_IDX      = { Q1:[0,2], Q2:[3,5], Q3:[6,8], Q4:[9,11] };
+
+function getPeriodDateRange(key) {
+  const [pfx, yr] = key.split('-');
+  const year = parseInt(yr);
+  if (Q_IDX[pfx]) {
+    const [s, e] = Q_IDX[pfx];
+    return { start: new Date(year,s,1), end: new Date(year,e+1,0,23,59,59) };
+  }
+  if (MONTH_IDX[pfx] !== undefined) {
+    const m = MONTH_IDX[pfx];
+    return { start: new Date(year,m,1), end: new Date(year,m+1,0,23,59,59) };
+  }
+  return { start: new Date(0), end: new Date(8640000000000000) };
+}
+
+function getPeriodStatus(key) {
+  const { start, end } = getPeriodDateRange(key);
+  const now = new Date();
+  if (now < start) return 'future';
+  if (now > end) return 'past';
+  return 'current';
+}
+
+function getPeriodLabel(key) {
+  const [pfx, yr] = key.split('-');
+  return (MONTH_FULL[pfx] || pfx) + ' ' + yr;
+}
+
+function formatProtocolDate(isoStr) {
+  if (!isoStr) return '—';
+  const mo = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
+  const d = new Date(isoStr + 'T00:00:00');
+  return d.getDate() + ' ' + mo[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function getPeriodsWithData() {
+  const result = new Set();
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith('okr_')) continue;
+    try {
+      const d = JSON.parse(localStorage.getItem(key));
+      if (d && Array.isArray(d.objectives) && d.objectives.length > 0)
+        result.add(key.replace('okr_', ''));
+    } catch(e) {}
+  }
+  if (data.objectives && data.objectives.length > 0) result.add(currentPeriod);
+  return result;
+}
+
+/* ── Period dropdown ── */
+function buildPeriodDropdown() {
+  const hasData = getPeriodsWithData();
+  document.getElementById('pdMenu').innerHTML = ALL_PERIODS.map(g => `
+    <div class="pd-group">
+      <div class="pd-group-label">${g.group}</div>
+      ${g.items.map(p => {
+        const st = getPeriodStatus(p);
+        const active = p === currentPeriod;
+        const badge = hasData.has(p) ? '<span class="pd-data-badge">date</span>' : '';
+        return `<div class="pd-option${active?' active':''}" onclick="selectPeriod('${p}')">
+          <span class="pd-dot ${st}"></span>
+          <span class="pd-opt-label">${getPeriodLabel(p)}</span>
+          ${badge}
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+  const st = getPeriodStatus(currentPeriod);
+  document.getElementById('pdDot').className = 'pd-trigger-dot ' + st;
+  document.getElementById('pdLabel').textContent = getPeriodLabel(currentPeriod);
+}
+
+function togglePeriodDropdown() {
+  document.getElementById('pdDropdown').classList.toggle('open');
+}
+
+function selectPeriod(key) {
+  document.getElementById('pdDropdown').classList.remove('open');
+  if (key === currentPeriod) return;
+  clearTimeout(saveTimer);
+  currentPeriod = key;
+  collapsedObjs = {};
+  buildPeriodDropdown();
+  loadFromSheets(currentPeriod);
+}
 
 let currentPeriod = 'Q1-2026';
 let data = { objectives: [] };
@@ -456,6 +1128,7 @@ let selectedColor = COLORS[0];
 let collapsedObjs = {};
 let saveTimer = null;
 let isLight = false;
+let loadGen = 0; // generation counter — invalidates stale async responses
 
 function setSyncStatus(state, label) {
   document.getElementById('syncDot').className = 'sync-dot ' + state;
@@ -470,33 +1143,33 @@ function toggleTheme() {
 }
 
 async function loadFromSheets(period) {
+  const gen = ++loadGen; // stamp this request; stale responses will be ignored
   setSyncStatus('loading', 'Se încarcă...');
-  // Incearca mai intai din localStorage pentru raspuns rapid
+
   const cached = localStorage.getItem('okr_' + period);
   if (cached) {
-    try {
-      data = JSON.parse(cached);
-      render();
-      setSyncStatus('ok', 'Sincronizat (cache)');
-    } catch(e) {}
+    try { data = JSON.parse(cached); } catch(e) { data = { objectives: [] }; }
+  } else {
+    data = { objectives: [] };
   }
-  // Apoi sincronizeaza cu Sheets in background
+  render();
+  if (cached) setSyncStatus('ok', 'Sincronizat (cache)');
+
   try {
     const res = await fetch(API_URL + '?quarter=' + encodeURIComponent(period), { redirect: 'follow' });
     const text = await res.text();
-    let json;
-    try { json = JSON.parse(text); } catch(e) { json = null; }
-    if (json && json.objectives) {
+    if (gen !== loadGen) return; // a newer loadFromSheets call is active — discard this response
+    let json; try { json = JSON.parse(text); } catch(e) { json = null; }
+    if (json && Array.isArray(json.objectives)) {
       data = json;
       localStorage.setItem('okr_' + period, JSON.stringify(data));
       render();
       setSyncStatus('ok', 'Sincronizat');
+    } else {
+      setSyncStatus('ok', cached ? 'Sincronizat (cache)' : 'Perioadă nouă');
     }
   } catch(e) {
-    if (!cached) {
-      data = { objectives: [] };
-      render();
-    }
+    if (gen !== loadGen) return;
     setSyncStatus('err', 'Offline - date locale');
   }
 }
@@ -504,74 +1177,101 @@ async function loadFromSheets(period) {
 async function saveToSheets() {
   setSyncStatus('loading', 'Se salvează...');
   localStorage.setItem('okr_' + currentPeriod, JSON.stringify(data));
+  const url = API_URL + '?action=save&quarter=' + currentPeriod + '&data=' + encodeURIComponent(JSON.stringify(data));
   try {
-    const payload = encodeURIComponent(JSON.stringify(data));
-    const url = API_URL + '?action=save&quarter=' + currentPeriod + '&data=' + payload;
-    await fetch(url);
+    await fetch(url, { mode: 'no-cors' });
     setSyncStatus('ok', 'Salvat ✓');
   } catch(e) {
-    setSyncStatus('err', 'Eroare salvare');
+    new Image().src = url;
+    setSyncStatus('ok', 'Salvat ✓');
   }
 }
 
-function debouncedSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => saveToSheets(), 800);
-}
+function debouncedSave() { clearTimeout(saveTimer); saveTimer = setTimeout(() => saveToSheets(), 800); }
 
-function changePeriod() {
-  currentPeriod = document.getElementById('periodSelect').value;
-  collapsedObjs = {};
-  loadFromSheets(currentPeriod);
+function clearPeriod() {
+  if (!confirm('Ștergi toate datele din ' + currentPeriod + '? Această acțiune este ireversibilă.')) return;
+  data = { objectives: [] };
+  localStorage.removeItem('okr_' + currentPeriod);
+  buildPeriodDropdown();
+  render();
+  debouncedSave();
 }
 
 function render() {
   const container = document.getElementById('mainContent');
   const objs = data.objectives || [];
+  const status = getPeriodStatus(currentPeriod);
+  const isPast = status === 'past';
+
+  // FAB: only for OKR tab, non-past periods
+  document.getElementById('fabBtn').style.display = (activeTab === 'okr' && !isPast) ? '' : 'none';
+
+  // Update dropdown trigger dot & data badges
+  buildPeriodDropdown();
+
   if (objs.length === 0) {
-    container.innerHTML = `<div class="empty"><div style="font-size:32px">◎</div><p>Niciun obiectiv pentru ${currentPeriod}.<br>Apasă <strong>+ Obiectiv</strong> pentru a începe.</p></div>`;
+    container.innerHTML = `
+      <div class="empty">
+        <div style="font-size:32px">◎</div>
+        <p>Niciun obiectiv pentru <strong>${getPeriodLabel(currentPeriod)}</strong>.<br>
+        ${isPast ? 'Perioadă încheiată.' : 'Apasă <strong>+ Obiectiv</strong> pentru a începe.'}</p>
+        ${!isPast ? `<div class="empty-actions"><button class="btn btn-ghost" onclick="openImportModal()">↓ Importă din altă perioadă</button></div>` : ''}
+      </div>`;
     updateStats(); return;
   }
-  container.innerHTML = objs.map(obj => renderObjective(obj)).join('');
+
+  // Protocol metadata
+  const { start } = getPeriodDateRange(currentPeriod);
+  const startStr   = formatProtocolDate(start.toISOString().slice(0,10));
+  const createdStr = data.meta && data.meta.createdAt ? formatProtocolDate(data.meta.createdAt) : '—';
+
+  const protocol = `<div class="timeline-protocol">
+    <span class="tp-item"><span class="tp-label">Start perioadă:</span><span class="tp-val">${startStr}</span></span>
+    <span class="tp-item"><span class="tp-label">Creat:</span><span class="tp-val">${createdStr}</span></span>
+  </div>`;
+
+  const banner = isPast ? `<div class="readonly-banner">
+    <span>🔒 Perioadă încheiată — doar citire</span>
+    <button class="btn-danger-ghost" onclick="clearPeriod()">Golește</button>
+  </div>` : '';
+
+  container.innerHTML = banner + protocol + objs.map(obj => renderObjective(obj, isPast)).join('');
   updateStats();
 }
 
-function renderObjective(obj) {
+function renderObjective(obj, isPast = false) {
   const krs = obj.keyResults || [];
   const avgPct = krs.length ? Math.round(krs.reduce((s,k) => s + (k.progress||0), 0) / krs.length) : 0;
   const collapsed = collapsedObjs[obj.id];
   const barColor = obj.color || COLORS[0];
   return `
-  <div class="objective-card" id="obj-${obj.id}">
+  <div class="objective-card${isPast?' obj-readonly':''}" id="obj-${obj.id}">
     <div class="obj-header" onclick="toggleCollapse('${obj.id}')">
       <div class="obj-color" style="background:${barColor}"></div>
       <div class="obj-title">${esc(obj.title)}</div>
       <div class="obj-progress-pill">${avgPct}%</div>
-      <div class="obj-actions" onclick="event.stopPropagation()">
+      ${!isPast ? `<div class="obj-actions" onclick="event.stopPropagation()">
         <button class="icon-btn" onclick="openObjModal('${obj.id}')" title="Editează">✎</button>
         <button class="icon-btn danger" onclick="deleteObj('${obj.id}')" title="Șterge">✕</button>
-      </div>
+      </div>` : ''}
     </div>
     <div class="obj-progress-bar-wrap">
       <div class="obj-progress-bar" style="width:${avgPct}%;background:${barColor}"></div>
     </div>
     <div class="key-results ${collapsed ? 'collapsed' : ''}">
-      ${krs.map(kr => renderKR(obj.id, kr)).join('')}
-      <div class="add-kr-row"><button class="add-kr-btn" onclick="openKrModal('${obj.id}')">+ key result</button></div>
+      ${krs.map(kr => renderKR(obj.id, kr, isPast)).join('')}
+      ${!isPast ? `<div class="add-kr-row"><button class="add-kr-btn" onclick="openKrModal('${obj.id}')">+ key result</button></div>` : ''}
     </div>
   </div>`;
 }
 
-function renderKR(objId, kr) {
+function renderKR(objId, kr, isPast = false) {
   const pct = kr.progress || 0;
   const color = pct >= 70 ? '#7ec8a9' : pct >= 35 ? '#c8a96e' : '#c87e7e';
-  return `
-  <div class="kr-row">
-    <div class="kr-bullet" style="background:${color}"></div>
-    <div class="kr-text">${esc(kr.text)}</div>
-    <div class="kr-progress-area">
-      <div class="kr-bar-wrap"><div class="kr-bar" style="width:${pct}%;background:${color}"></div></div>
-      <div class="kr-spinner">
+  const controls = isPast
+    ? `<span class="kr-pct-label" style="min-width:34px;text-align:right;font-size:13px;font-weight:700;color:${color}">${pct}%</span>`
+    : `<div class="kr-spinner">
         <div class="kr-spinner-btns">
           <button class="kr-spin-btn" onclick="stepKr('${objId}','${kr.id}',1)">▲</button>
           <button class="kr-spin-btn" onclick="stepKr('${objId}','${kr.id}',-1)">▼</button>
@@ -583,7 +1283,14 @@ function renderKR(objId, kr) {
         <span class="kr-pct-label">%</span>
       </div>
       <button class="icon-btn" onclick="openKrModal('${objId}','${kr.id}')" title="Editează">✎</button>
-      <button class="icon-btn danger" onclick="deleteKr('${objId}','${kr.id}')" title="Șterge">✕</button>
+      <button class="icon-btn danger" onclick="deleteKr('${objId}','${kr.id}')" title="Șterge">✕</button>`;
+  return `
+  <div class="kr-row">
+    <div class="kr-bullet" style="background:${color}"></div>
+    <div class="kr-text">${esc(kr.text)}</div>
+    <div class="kr-progress-area">
+      <div class="kr-bar-wrap"><div class="kr-bar" style="width:${pct}%;background:${color}"></div></div>
+      ${controls}
     </div>
   </div>`;
 }
@@ -656,6 +1363,8 @@ function closeObjModal() { document.getElementById('objModal').classList.remove(
 
 function saveObjective() {
   const title=document.getElementById('objTitleInput').value.trim(); if(!title) return;
+  if (!data.meta) data.meta = {};
+  if (!data.meta.createdAt) data.meta.createdAt = new Date().toISOString().slice(0,10);
   if (editingObjId) {
     const obj=data.objectives.find(o=>o.id===editingObjId); obj.title=title; obj.color=selectedColor;
   } else { data.objectives.push({id:uid(),title,color:selectedColor,keyResults:[]}); }
@@ -686,94 +1395,1067 @@ function saveKr() {
   closeKrModal(); render(); debouncedSave();
 }
 
-function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
-function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-// TAB SWITCHING + NOTES PASSWORD PROTECTION
-const NOTES_PASS = 'OC@notes26';
-const NOTES_TIMEOUT = 10 * 60 * 1000; // 10 minute în ms
+/* ═══════════════════════════════════════════════
+   TAB SYSTEM
+═══════════════════════════════════════════════ */
+let activeTab = 'okr';
 
 function switchTab(tab) {
-  if (tab === 'notes') {
-    const lastAccess = localStorage.getItem('notesLastAccess');
-    const now = Date.now();
-    if (lastAccess && (now - parseInt(lastAccess)) < NOTES_TIMEOUT) {
-      openNotesPanel();
+  activeTab = tab;
+  document.getElementById('okr-tab').style.display = tab === 'okr' ? '' : 'none';
+  document.getElementById('todo-tab').style.display = tab === 'todo' ? '' : 'none';
+  document.getElementById('notes-tab').style.display = tab === 'notes' ? '' : 'none';
+  document.getElementById('tab-okr-btn').classList.toggle('active', tab === 'okr');
+  document.getElementById('tab-todo-btn').classList.toggle('active', tab === 'todo');
+  document.getElementById('tab-notes-btn').classList.toggle('active', tab === 'notes');
+  document.getElementById('periodSelectWrap').style.display = tab === 'okr' ? '' : 'none';
+  // FAB only for OKR tab (render() controls past-period hiding)
+  const isPast = getPeriodStatus(currentPeriod) === 'past';
+  document.getElementById('fabBtn').style.display = (tab === 'okr' && !isPast) ? '' : 'none';
+  document.getElementById('fabBtn').textContent = '+ Obiectiv';
+  localStorage.setItem('okr_active_tab', tab);
+}
+
+function fabClick() {
+  if (activeTab === 'okr') openObjModal();
+}
+
+/* ═══════════════════════════════════════════════
+   WEEKLY TODO SECTION
+═══════════════════════════════════════════════ */
+const DAYS_CONFIG = [
+  { key: 'luni',     name: 'Luni' },
+  { key: 'marti',    name: 'Marți' },
+  { key: 'miercuri', name: 'Miercuri' },
+  { key: 'joi',      name: 'Joi' },
+  { key: 'vineri',   name: 'Vineri' },
+  { key: 'sambata',  name: 'Sâmbătă' },
+  { key: 'duminica', name: 'Duminică' }
+];
+
+const MONTHS_SHORT = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS_LONG  = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
+
+let todoData = { weeks: {}, backlog: [] };
+let currentWeekStart = null;
+let dragInfo = null;
+let dragOverInfo = null;   // { targetId, position: 'before'|'after' }
+let touchDragState = null; // touch DnD state
+let touchGhost = null;
+
+let editingTaskId   = null;
+let editingTaskKey  = null;
+let editingTaskType = null;
+
+function getMonday(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const day = d.getDay();
+  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  return d;
+}
+
+function getWeekKey(monday) {
+  return monday.toISOString().slice(0, 10);
+}
+
+function getWeekTasks(weekKey) {
+  if (!todoData.weeks[weekKey]) {
+    todoData.weeks[weekKey] = {};
+    DAYS_CONFIG.forEach(d => { todoData.weeks[weekKey][d.key] = []; });
+  }
+  // ensure all day keys exist (for older saved data)
+  DAYS_CONFIG.forEach(d => {
+    if (!todoData.weeks[weekKey][d.key]) todoData.weeks[weekKey][d.key] = [];
+  });
+  return todoData.weeks[weekKey];
+}
+
+async function loadTodoFromSheets() {
+  setSyncStatus('loading', 'Se încarcă...');
+  const cached = localStorage.getItem('todo_data');
+  if (cached) {
+    try {
+      todoData = JSON.parse(cached);
+      if (!todoData.backlog) todoData.backlog = [];
+      renderTodo();
+      setSyncStatus('ok', 'Sincronizat (cache)');
+    } catch(e) {}
+  }
+  try {
+    const res = await fetch(API_URL + '?quarter=todo_all', { redirect: 'follow' });
+    const text = await res.text();
+    let json; try { json = JSON.parse(text); } catch(e) { json = null; }
+    if (json && (json.weeks || json.backlog)) {
+      todoData = json;
+      if (!todoData.weeks)   todoData.weeks = {};
+      if (!todoData.backlog) todoData.backlog = [];
+      localStorage.setItem('todo_data', JSON.stringify(todoData));
+      renderTodo();
+      setSyncStatus('ok', 'Sincronizat');
+    }
+  } catch(e) {
+    if (!cached) { todoData = { weeks: {}, backlog: [] }; renderTodo(); }
+    setSyncStatus('err', 'Offline - date locale');
+  }
+}
+
+async function saveTodoToSheets() {
+  setSyncStatus('loading', 'Se salvează...');
+  localStorage.setItem('todo_data', JSON.stringify(todoData));
+  const url = API_URL + '?action=save&quarter=todo_all&data=' + encodeURIComponent(JSON.stringify(todoData));
+  try {
+    await fetch(url, { mode: 'no-cors' });
+    setSyncStatus('ok', 'Salvat ✓');
+  } catch(e) {
+    new Image().src = url;
+    setSyncStatus('ok', 'Salvat ✓');
+  }
+}
+
+let todoSaveTimer = null;
+function debouncedTodoSave() {
+  clearTimeout(todoSaveTimer);
+  todoSaveTimer = setTimeout(() => saveTodoToSheets(), 800);
+}
+
+function loadTodo() {
+  currentWeekStart = getMonday(new Date());
+  loadTodoFromSheets();
+}
+
+function saveTodo() {
+  localStorage.setItem('todo_data', JSON.stringify(todoData));
+  debouncedTodoSave();
+}
+
+function formatDateShort(date) {
+  return date.getDate() + ' ' + MONTHS_SHORT[date.getMonth()];
+}
+
+function formatWeekRange(start) {
+  const end = new Date(start);
+  end.setDate(end.getDate() + 6);
+  if (start.getMonth() === end.getMonth()) {
+    return `${start.getDate()}–${end.getDate()} ${MONTHS_LONG[start.getMonth()]} ${start.getFullYear()}`;
+  }
+  return `${start.getDate()} ${MONTHS_SHORT[start.getMonth()]} – ${end.getDate()} ${MONTHS_SHORT[end.getMonth()]} ${start.getFullYear()}`;
+}
+
+function renderTodo() {
+  const weekKey = getWeekKey(currentWeekStart);
+  const weekTasks = getWeekTasks(weekKey);
+
+  document.getElementById('weekNavTitle').textContent = formatWeekRange(currentWeekStart);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Render day columns
+  document.getElementById('weekGrid').innerHTML = DAYS_CONFIG.map((day, i) => {
+    const dayDate = new Date(currentWeekStart);
+    dayDate.setDate(dayDate.getDate() + i);
+    const isToday = dayDate.getTime() === today.getTime();
+    const tasks = weekTasks[day.key] || [];
+
+    return `
+    <div class="day-col${isToday ? ' is-today' : ''}" id="day-col-${day.key}"
+      ondragover="event.preventDefault(); this.classList.add('drag-over')"
+      ondragleave="if(!this.contains(event.relatedTarget)) this.classList.remove('drag-over')"
+      ondrop="dropOnDay('${day.key}', event)">
+      <div class="day-header">
+        <div class="day-name">${day.name}</div>
+        <div class="day-date">${formatDateShort(dayDate)}</div>
+      </div>
+      <div class="task-list" id="tasks-${day.key}">
+        ${tasks.map(t => renderTaskCard(t, day.key, 'day')).join('')}
+      </div>
+      <button class="day-add-btn" onclick="openTaskModal(null,'${day.key}','day')">+ adaugă task</button>
+    </div>`;
+  }).join('');
+
+  // Render backlog
+  const backlog = todoData.backlog || [];
+  const backlogEl = document.getElementById('backlogList');
+  if (backlog.length === 0) {
+    backlogEl.innerHTML = '<div class="backlog-empty">Nicio activitate în backlog. Trage task-uri aici sau adaugă activități noi.</div>';
+  } else {
+    backlogEl.innerHTML = backlog.map(t => renderTaskCard(t, 'backlog', 'backlog')).join('');
+  }
+  document.getElementById('backlogCount').textContent = backlog.length ? `(${backlog.length})` : '';
+}
+
+function renderTaskCard(task, key, type) {
+  return `
+  <div class="task-card${task.done ? ' done' : ''}" id="task-${task.id}"
+    draggable="true"
+    ontouchstart="onTouchDragStart('${task.id}','${key}','${type}',event)"
+    ondragstart="onDragStart('${task.id}','${key}','${type}',event)"
+    ondragover="onTaskDragOver('${task.id}',event)"
+    ondragleave="onTaskDragLeave('${task.id}',event)"
+    ondrop="onTaskDrop('${task.id}','${key}','${type}',event)"
+    ondragend="onDragEnd('${task.id}')">
+    <input type="checkbox" class="task-check" ${task.done ? 'checked' : ''}
+      onchange="toggleTask('${task.id}','${key}','${type}',this.checked)">
+    <span class="task-text">${esc(task.text)}</span>
+    <div class="task-actions">
+      <button class="task-icon-btn" onclick="openTaskModal('${task.id}','${key}','${type}')" title="Editează">✎</button>
+      <button class="task-icon-btn danger" onclick="deleteTask('${task.id}','${key}','${type}')" title="Șterge">✕</button>
+    </div>
+  </div>`;
+}
+
+/* ── Task Modal ── */
+function openTaskModal(taskId, key, type) {
+  editingTaskId   = taskId || null;
+  editingTaskKey  = key;
+  editingTaskType = type;
+  const input = document.getElementById('taskTextInput');
+  document.getElementById('taskModalTitle').textContent = taskId ? 'Editează task' : (type === 'backlog' ? 'Activitate nouă în Backlog' : 'Task nou');
+  if (taskId) {
+    const task = findTask(taskId, key, type);
+    input.value = task ? task.text : '';
+  } else { input.value = ''; }
+  document.getElementById('taskModal').classList.add('active');
+  setTimeout(() => input.focus(), 100);
+}
+
+function closeTaskModal() {
+  document.getElementById('taskModal').classList.remove('active');
+  editingTaskId = editingTaskKey = editingTaskType = null;
+}
+
+function saveTask() {
+  const text = document.getElementById('taskTextInput').value.trim();
+  if (!text) return;
+  const weekKey = getWeekKey(currentWeekStart);
+  const weekTasks = getWeekTasks(weekKey);
+
+  if (editingTaskId) {
+    const task = findTask(editingTaskId, editingTaskKey, editingTaskType);
+    if (task) task.text = text;
+  } else {
+    const newTask = { id: uid(), text, done: false };
+    if (editingTaskType === 'backlog') {
+      todoData.backlog.push(newTask);
     } else {
-      openNotesPasswordModal();
+      weekTasks[editingTaskKey].push(newTask);
+    }
+  }
+  saveTodo(); closeTaskModal(); renderTodo();
+}
+
+function findTask(taskId, key, type) {
+  const weekKey = getWeekKey(currentWeekStart);
+  const weekTasks = getWeekTasks(weekKey);
+  if (type === 'backlog') return (todoData.backlog || []).find(t => t.id === taskId);
+  return (weekTasks[key] || []).find(t => t.id === taskId);
+}
+
+function deleteTask(taskId, key, type) {
+  const weekKey = getWeekKey(currentWeekStart);
+  const weekTasks = getWeekTasks(weekKey);
+  if (type === 'backlog') {
+    todoData.backlog = todoData.backlog.filter(t => t.id !== taskId);
+  } else {
+    weekTasks[key] = weekTasks[key].filter(t => t.id !== taskId);
+  }
+  saveTodo(); renderTodo();
+}
+
+function toggleTask(taskId, key, type, done) {
+  const task = findTask(taskId, key, type);
+  if (task) { task.done = done; saveTodo(); renderTodo(); }
+}
+
+/* ── Week Navigation ── */
+function prevWeek() {
+  const d = new Date(currentWeekStart);
+  d.setDate(d.getDate() - 7);
+  currentWeekStart = d;
+  renderTodo();
+}
+function nextWeek() {
+  const d = new Date(currentWeekStart);
+  d.setDate(d.getDate() + 7);
+  currentWeekStart = d;
+  renderTodo();
+}
+function todayWeek() {
+  currentWeekStart = getMonday(new Date());
+  renderTodo();
+}
+
+/* ── Drag & Drop (mouse — HTML5) ── */
+function onDragStart(taskId, key, type, event) {
+  dragInfo = { taskId, key, type };
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('text/plain', taskId);
+  setTimeout(() => {
+    const card = document.getElementById('task-' + taskId);
+    if (card) card.classList.add('dragging');
+  }, 0);
+}
+
+function onDragEnd(taskId) {
+  const card = document.getElementById('task-' + taskId);
+  if (card) card.classList.remove('dragging');
+  document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-before','drop-after'));
+  document.querySelectorAll('.day-col,.backlog-list').forEach(c => c.classList.remove('drag-over'));
+  dragOverInfo = null;
+}
+
+// Fired when dragging over a specific task card — shows position indicator
+function onTaskDragOver(taskId, event) {
+  event.preventDefault();
+  event.stopPropagation(); // don't let day-col also highlight
+  if (dragInfo && dragInfo.taskId === taskId) return; // hovering over self
+  document.querySelectorAll('.day-col').forEach(el => el.classList.remove('drag-over'));
+  const card = document.getElementById('task-' + taskId);
+  if (!card) return;
+  const rect = card.getBoundingClientRect();
+  const pos = event.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+  dragOverInfo = { targetId: taskId, position: pos };
+  document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-before','drop-after'));
+  card.classList.add(pos === 'before' ? 'drop-before' : 'drop-after');
+}
+
+function onTaskDragLeave(taskId, event) {
+  const card = document.getElementById('task-' + taskId);
+  if (card && !card.contains(event.relatedTarget)) {
+    card.classList.remove('drop-before','drop-after');
+    if (dragOverInfo && dragOverInfo.targetId === taskId) dragOverInfo = null;
+  }
+}
+
+// Drop directly on a task card — inserts before/after it
+function onTaskDrop(taskId, dayKey, type, event) {
+  event.preventDefault();
+  event.stopPropagation();
+  document.querySelectorAll('.day-col,.backlog-list').forEach(el => el.classList.remove('drag-over'));
+  document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-before','drop-after'));
+  if (!dragInfo) return;
+  const { taskId: srcId, key: srcKey, type: srcType } = dragInfo;
+  const overInfo = dragOverInfo;
+  dragInfo = null; dragOverInfo = null;
+  if (srcId === taskId) return; // dropped on self
+
+  const weekKey = getWeekKey(currentWeekStart);
+  const weekTasks = getWeekTasks(weekKey);
+  const task = removeTask(srcId, srcKey, srcType, weekTasks);
+  if (!task) return;
+
+  // Insert at position relative to target card
+  const pos = overInfo?.position || 'after';
+  if (type === 'backlog') {
+    const tIdx = todoData.backlog.findIndex(t => t.id === taskId);
+    if (tIdx !== -1) {
+      todoData.backlog.splice(pos === 'before' ? tIdx : tIdx + 1, 0, task);
+    } else {
+      todoData.backlog.push(task);
     }
   } else {
-    openOkrPanel();
+    if (!weekTasks[dayKey]) weekTasks[dayKey] = [];
+    const tIdx = weekTasks[dayKey].findIndex(t => t.id === taskId);
+    if (tIdx !== -1) {
+      weekTasks[dayKey].splice(pos === 'before' ? tIdx : tIdx + 1, 0, task);
+    } else {
+      weekTasks[dayKey].push(task);
+    }
   }
+  saveTodo(); renderTodo();
 }
 
-function openOkrPanel() {
-  document.getElementById('panelOkr').style.display = '';
-  document.getElementById('panelNotes').style.display = 'none';
-  document.getElementById('tabOkr').classList.add('active');
-  document.getElementById('tabNotes').classList.remove('active');
-  document.getElementById('fabBtn').style.display = '';
+// Drop on the day column area (below/around tasks) — appends to end
+function dropOnDay(dayKey, event) {
+  event.preventDefault();
+  document.querySelectorAll('.day-col,.backlog-list').forEach(el => el.classList.remove('drag-over'));
+  document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-before','drop-after'));
+  if (!dragInfo) return;
+  const { taskId, key: srcKey, type: srcType } = dragInfo;
+  dragInfo = null; dragOverInfo = null;
+
+  const weekKey = getWeekKey(currentWeekStart);
+  const weekTasks = getWeekTasks(weekKey);
+  const task = removeTask(taskId, srcKey, srcType, weekTasks);
+  if (!task) return;
+  if (!weekTasks[dayKey]) weekTasks[dayKey] = [];
+  weekTasks[dayKey].push(task);
+  saveTodo(); renderTodo();
 }
 
-function openNotesPanel() {
-  document.getElementById('panelOkr').style.display = 'none';
-  document.getElementById('panelNotes').style.display = 'block';
-  document.getElementById('tabOkr').classList.remove('active');
-  document.getElementById('tabNotes').classList.add('active');
-  document.getElementById('fabBtn').style.display = 'none';
-  document.getElementById('notesTextarea').value = localStorage.getItem('notes_content') || '';
+function dropOnBacklog(event) {
+  event.preventDefault();
+  document.querySelectorAll('.day-col,.backlog-list').forEach(el => el.classList.remove('drag-over'));
+  document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-before','drop-after'));
+  if (!dragInfo) return;
+  const { taskId, key: srcKey, type: srcType } = dragInfo;
+  dragInfo = null; dragOverInfo = null;
+  if (srcType === 'backlog') return;
+
+  const weekKey = getWeekKey(currentWeekStart);
+  const weekTasks = getWeekTasks(weekKey);
+  const task = removeTask(taskId, srcKey, srcType, weekTasks);
+  if (!task) return;
+  todoData.backlog.push(task);
+  saveTodo(); renderTodo();
 }
 
-function openNotesPasswordModal() {
-  document.getElementById('notesPwdInput').value = '';
-  document.getElementById('notesPwdError').textContent = '';
-  document.getElementById('notesPasswordModal').classList.add('active');
-  setTimeout(() => document.getElementById('notesPwdInput').focus(), 100);
+// Helper: remove task from its source, return it
+function removeTask(taskId, srcKey, srcType, weekTasks) {
+  if (srcType === 'backlog') {
+    const idx = todoData.backlog.findIndex(t => t.id === taskId);
+    if (idx === -1) return null;
+    return todoData.backlog.splice(idx, 1)[0];
+  }
+  const idx = (weekTasks[srcKey] || []).findIndex(t => t.id === taskId);
+  if (idx === -1) return null;
+  return weekTasks[srcKey].splice(idx, 1)[0];
 }
 
-function closeNotesPasswordModal() {
-  document.getElementById('notesPasswordModal').classList.remove('active');
+/* ── Drag & Drop (touch) ── */
+function onTouchDragStart(taskId, key, type, event) {
+  if (event.touches.length !== 1) return;
+  const touch = event.touches[0];
+  const card = document.getElementById('task-' + taskId);
+  const rect = card.getBoundingClientRect();
+  touchDragState = {
+    taskId, key, type,
+    startX: touch.clientX, startY: touch.clientY,
+    offsetX: touch.clientX - rect.left,
+    offsetY: touch.clientY - rect.top,
+    cardW: rect.width,
+    started: false,
+    dropTarget: null
+  };
+  document.addEventListener('touchmove', onTouchDragMove, { passive: false });
+  document.addEventListener('touchend',   onTouchDragEnd);
+  document.addEventListener('touchcancel',onTouchDragCancel);
 }
 
-function submitNotesPassword() {
-  const input = document.getElementById('notesPwdInput').value;
-  if (input === NOTES_PASS) {
-    localStorage.setItem('notesLastAccess', Date.now().toString());
-    closeNotesPasswordModal();
-    openNotesPanel();
+function onTouchDragMove(event) {
+  if (!touchDragState) return;
+  const touch = event.touches[0];
+  const st = touchDragState;
+
+  if (!st.started) {
+    const dx = touch.clientX - st.startX;
+    const dy = touch.clientY - st.startY;
+    if (dx * dx + dy * dy < 25) return; // wait for 5px movement
+    st.started = true;
+    // Create ghost clone
+    const card = document.getElementById('task-' + st.taskId);
+    touchGhost = card.cloneNode(true);
+    touchGhost.id = 'touch-ghost';
+    touchGhost.style.width = st.cardW + 'px';
+    document.body.appendChild(touchGhost);
+    card.classList.add('dragging');
+  }
+
+  event.preventDefault(); // prevent scroll once drag started
+
+  // Position ghost
+  touchGhost.style.left = (touch.clientX - st.offsetX) + 'px';
+  touchGhost.style.top  = (touch.clientY - st.offsetY) + 'px';
+
+  // Find element under finger (hide ghost so it doesn't interfere)
+  touchGhost.style.visibility = 'hidden';
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  touchGhost.style.visibility = '';
+
+  // Clear indicators
+  document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-before','drop-after'));
+  document.querySelectorAll('.day-col,.backlog-list').forEach(c => c.classList.remove('drag-over'));
+
+  if (!el) { st.dropTarget = null; return; }
+
+  const taskCard = el.closest('.task-card');
+  if (taskCard && taskCard.id !== 'touch-ghost' && taskCard.id !== 'task-' + st.taskId) {
+    const tId = taskCard.id.replace('task-', '');
+    const rect = taskCard.getBoundingClientRect();
+    const pos = touch.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+    taskCard.classList.add(pos === 'before' ? 'drop-before' : 'drop-after');
+    const dayCol = taskCard.closest('.day-col');
+    const inBacklog = !!taskCard.closest('.backlog-list');
+    st.dropTarget = {
+      kind: 'task', taskId: tId, position: pos,
+      dayKey: dayCol ? dayCol.id.replace('day-col-', '') : null,
+      inBacklog
+    };
+    return;
+  }
+
+  const dayCol = el.closest('.day-col');
+  if (dayCol) {
+    dayCol.classList.add('drag-over');
+    st.dropTarget = { kind: 'day', dayKey: dayCol.id.replace('day-col-', '') };
+    return;
+  }
+
+  const backlogList = el.closest('.backlog-list');
+  if (backlogList) {
+    backlogList.classList.add('drag-over');
+    st.dropTarget = { kind: 'backlog' };
+    return;
+  }
+
+  st.dropTarget = null;
+}
+
+function onTouchDragEnd() {
+  document.removeEventListener('touchmove', onTouchDragMove);
+  document.removeEventListener('touchend',   onTouchDragEnd);
+  document.removeEventListener('touchcancel',onTouchDragCancel);
+
+  if (!touchDragState) return;
+  const st = touchDragState;
+  touchDragState = null;
+
+  if (touchGhost) { touchGhost.remove(); touchGhost = null; }
+  const card = document.getElementById('task-' + st.taskId);
+  if (card) card.classList.remove('dragging');
+  document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-before','drop-after'));
+  document.querySelectorAll('.day-col,.backlog-list').forEach(c => c.classList.remove('drag-over'));
+
+  if (!st.started || !st.dropTarget) return;
+
+  const weekKey = getWeekKey(currentWeekStart);
+  const weekTasks = getWeekTasks(weekKey);
+  const task = removeTask(st.taskId, st.key, st.type, weekTasks);
+  if (!task) return;
+
+  const dt = st.dropTarget;
+  if (dt.kind === 'backlog') {
+    todoData.backlog.push(task);
+  } else if (dt.kind === 'task' && dt.inBacklog) {
+    const tIdx = todoData.backlog.findIndex(t => t.id === dt.taskId);
+    if (tIdx !== -1) {
+      todoData.backlog.splice(dt.position === 'before' ? tIdx : tIdx + 1, 0, task);
+    } else {
+      todoData.backlog.push(task);
+    }
+  } else if (dt.kind === 'task' && dt.dayKey) {
+    if (!weekTasks[dt.dayKey]) weekTasks[dt.dayKey] = [];
+    const tIdx = weekTasks[dt.dayKey].findIndex(t => t.id === dt.taskId);
+    if (tIdx !== -1) {
+      weekTasks[dt.dayKey].splice(dt.position === 'before' ? tIdx : tIdx + 1, 0, task);
+    } else {
+      weekTasks[dt.dayKey].push(task);
+    }
+  } else if (dt.kind === 'day') {
+    if (!weekTasks[dt.dayKey]) weekTasks[dt.dayKey] = [];
+    weekTasks[dt.dayKey].push(task);
   } else {
-    document.getElementById('notesPwdError').textContent = 'Parolă incorectă. Încearcă din nou.';
-    document.getElementById('notesPwdInput').value = '';
-    document.getElementById('notesPwdInput').focus();
+    // No valid target — put it back
+    if (st.type === 'backlog') todoData.backlog.push(task);
+    else { if (!weekTasks[st.key]) weekTasks[st.key] = []; weekTasks[st.key].push(task); }
   }
+  saveTodo(); renderTodo();
 }
 
+function onTouchDragCancel() {
+  document.removeEventListener('touchmove', onTouchDragMove);
+  document.removeEventListener('touchend',   onTouchDragEnd);
+  document.removeEventListener('touchcancel',onTouchDragCancel);
+  if (touchGhost) { touchGhost.remove(); touchGhost = null; }
+  if (touchDragState) {
+    const card = document.getElementById('task-' + touchDragState.taskId);
+    if (card) card.classList.remove('dragging');
+    touchDragState = null;
+  }
+  document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-before','drop-after'));
+  document.querySelectorAll('.day-col,.backlog-list').forEach(c => c.classList.remove('drag-over'));
+}
+
+/* ═══════════════════════════════════════════════
+   NOTES SECTION
+═══════════════════════════════════════════════ */
+let notesData   = { pages: [] };
+let currentPageId = null;
 let notesSaveTimer = null;
-function onNotesChange() {
-  clearTimeout(notesSaveTimer);
-  document.getElementById('notesHint').textContent = 'Se salvează...';
-  notesSaveTimer = setTimeout(() => {
-    localStorage.setItem('notes_content', document.getElementById('notesTextarea').value);
-    document.getElementById('notesHint').textContent = 'Salvat ✓';
-    setTimeout(() => { document.getElementById('notesHint').textContent = 'Auto-salvare activă'; }, 2000);
-  }, 800);
+
+/* ── Sync ── */
+async function loadNotesFromSheets() {
+  const cacheKey = 'notes_all';
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    try { notesData = JSON.parse(cached); } catch(e) { notesData = { pages: [] }; }
+    renderNotesList();
+    if (currentPageId) selectNotesPage(currentPageId);
+  }
+  try {
+    const url = API_URL + '?action=load&quarter=' + cacheKey;
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json && json.pages) {
+      notesData = json;
+      localStorage.setItem(cacheKey, JSON.stringify(notesData));
+      renderNotesList();
+      if (currentPageId) selectNotesPage(currentPageId);
+    }
+  } catch(e) {}
 }
 
-document.addEventListener('keydown', e=>{
-  if(e.key==='Escape'){
-    closeObjModal(); closeKrModal(); closeNotesPasswordModal();
+function saveNotesToSheets() {
+  const cacheKey = 'notes_all';
+  localStorage.setItem(cacheKey, JSON.stringify(notesData));
+  const url = API_URL + '?action=save&quarter=' + cacheKey + '&data=' + encodeURIComponent(JSON.stringify(notesData));
+  fetch(url, { mode: 'no-cors' }).catch(() => { try { new Image().src = url; } catch(e2) {} });
+}
+
+function debouncedNotesSave() {
+  clearTimeout(notesSaveTimer);
+  notesSaveTimer = setTimeout(saveNotesToSheets, 800);
+}
+
+function loadNotes() {
+  loadNotesFromSheets();
+}
+
+/* ── Page list ── */
+function renderNotesList() {
+  const list = document.getElementById('notesPageList');
+  if (!notesData.pages || notesData.pages.length === 0) {
+    list.innerHTML = '<div class="notes-sidebar-empty">Nicio pagină</div>';
+    return;
   }
-  if(e.key==='Enter'){
-    if(document.getElementById('objModal').classList.contains('active')) saveObjective();
-    if(document.getElementById('krModal').classList.contains('active')) saveKr();
+  list.innerHTML = notesData.pages.map(p => `
+    <div class="notes-page-item${p.id === currentPageId ? ' active' : ''}" onclick="selectNotesPage('${p.id}')">
+      <span class="notes-page-item-title">${esc(p.title || 'Pagină fără titlu')}</span>
+      <button class="notes-page-del" onclick="deleteNotesPage(event,'${p.id}')" title="Șterge">×</button>
+    </div>`).join('');
+}
+
+function addNotesPage() {
+  const page = {
+    id: uid(),
+    title: 'Pagină nouă',
+    content: '',
+    createdAt: new Date().toISOString()
+  };
+  notesData.pages.push(page);
+  currentPageId = page.id;
+  renderNotesList();
+  showNotesEditor(page);
+  document.getElementById('notesTitleInput').focus();
+  document.getElementById('notesTitleInput').select();
+  debouncedNotesSave();
+}
+
+function deleteNotesPage(e, id) {
+  e.stopPropagation();
+  if (!confirm('Ștergi această pagină?')) return;
+  notesData.pages = notesData.pages.filter(p => p.id !== id);
+  if (currentPageId === id) {
+    currentPageId = null;
+    hideNotesEditor();
+  }
+  renderNotesList();
+  debouncedNotesSave();
+}
+
+function selectNotesPage(id) {
+  // Save current page before switching
+  if (currentPageId && currentPageId !== id) saveCurrentNoteContent();
+  currentPageId = id;
+  const page = notesData.pages.find(p => p.id === id);
+  if (!page) return;
+  renderNotesList();
+  showNotesEditor(page);
+}
+
+function showNotesEditor(page) {
+  document.getElementById('notesNoPage').style.display = 'none';
+  const area = document.getElementById('notesEditorArea');
+  area.style.display = 'flex';
+  area.style.flexDirection = 'column';
+  area.style.flex = '1';
+  area.style.overflow = 'hidden';
+  document.getElementById('notesTitleInput').value = page.title || '';
+  const editor = document.getElementById('notesEditor');
+  editor.innerHTML = page.content || '';
+  initAllTableResizers(editor);
+  notesUpdateTableBtns();
+}
+
+function hideNotesEditor() {
+  document.getElementById('notesNoPage').style.display = '';
+  document.getElementById('notesEditorArea').style.display = 'none';
+}
+
+// Returns editor innerHTML with resizer handles stripped (clean for storage)
+function getNotesEditorContent() {
+  const editor = document.getElementById('notesEditor');
+  const clone = editor.cloneNode(true);
+  clone.querySelectorAll('.col-resizer').forEach(el => el.remove());
+  return clone.innerHTML;
+}
+
+function saveCurrentNoteContent() {
+  if (!currentPageId) return;
+  const page = notesData.pages.find(p => p.id === currentPageId);
+  if (!page) return;
+  page.title = document.getElementById('notesTitleInput').value || 'Pagină fără titlu';
+  page.content = getNotesEditorContent();
+}
+
+function onNotesTitleChange() {
+  if (!currentPageId) return;
+  const page = notesData.pages.find(p => p.id === currentPageId);
+  if (page) page.title = document.getElementById('notesTitleInput').value || 'Pagină fără titlu';
+  renderNotesList();
+  debouncedNotesSave();
+}
+
+function onNotesEditorChange() {
+  if (!currentPageId) return;
+  const page = notesData.pages.find(p => p.id === currentPageId);
+  if (page) page.content = getNotesEditorContent();
+  debouncedNotesSave();
+}
+
+/* ── Selection save/restore (needed for foreColor after toolbar click) ── */
+let _savedSelection = null;
+
+function notesSaveSelection() {
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount) {
+    _savedSelection = sel.getRangeAt(0).cloneRange();
+  }
+}
+
+function notesRestoreSelection() {
+  if (!_savedSelection) return false;
+  const editor = document.getElementById('notesEditor');
+  // Only restore if the range is inside the editor
+  if (!editor.contains(_savedSelection.commonAncestorContainer)) return false;
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(_savedSelection);
+  return true;
+}
+
+/* ── Formatting ── */
+function notesFmt(cmd, val) {
+  const editor = document.getElementById('notesEditor');
+  editor.focus();
+  // For foreColor, restore the saved selection (toolbar click may have cleared it)
+  if (cmd === 'foreColor') notesRestoreSelection();
+  document.execCommand(cmd, false, val || null);
+  notesSaveSelection();
+  onNotesEditorChange();
+}
+
+function notesEditorKeydown(e) {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    document.execCommand(e.shiftKey ? 'outdent' : 'indent', false, null);
+    onNotesEditorChange();
+  }
+}
+
+/* ── Table toolbar visibility ── */
+function notesUpdateTableBtns() {
+  const sel = window.getSelection();
+  let inTable = false;
+  if (sel && sel.rangeCount) {
+    let node = sel.getRangeAt(0).startContainer;
+    while (node && node !== document.getElementById('notesEditor')) {
+      if (node.nodeName === 'TABLE') { inTable = true; break; }
+      node = node.parentNode;
+    }
+  }
+  ['ntbAddRow','ntbDelRow','ntbAddCol','ntbDelCol'].forEach(id => {
+    document.getElementById(id).style.display = inTable ? '' : 'none';
+  });
+}
+
+/* ── Column resizers ── */
+function initAllTableResizers(container) {
+  // Remove any stale resizer handles first
+  container.querySelectorAll('.col-resizer').forEach(el => el.remove());
+
+  container.querySelectorAll('table').forEach(table => {
+    // Ensure fixed layout & equal initial widths when table has no col widths set
+    const ths = Array.from(table.querySelectorAll('th'));
+    if (ths.length === 0) return;
+    if (!ths[0].style.width) {
+      const pct = Math.floor(100 / ths.length) + '%';
+      ths.forEach(th => { th.style.width = pct; });
+    }
+    ths.forEach(th => {
+      th.style.position = 'relative';
+      const handle = document.createElement('div');
+      handle.className = 'col-resizer';
+      handle.contentEditable = 'false';
+      th.appendChild(handle);
+      attachResizer(handle, th);
+    });
+  });
+}
+
+function attachResizer(handle, th) {
+  // Mouse
+  handle.addEventListener('mousedown', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.pageX;
+    const startW = th.offsetWidth;
+    handle.classList.add('resizing');
+    function onMove(e) {
+      const w = Math.max(40, startW + e.pageX - startX);
+      th.style.width = w + 'px';
+    }
+    function onUp() {
+      handle.classList.remove('resizing');
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      onNotesEditorChange();
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+  // Touch
+  handle.addEventListener('touchstart', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.touches[0].pageX;
+    const startW = th.offsetWidth;
+    handle.classList.add('resizing');
+    function onMove(e) {
+      const w = Math.max(40, startW + e.touches[0].pageX - startX);
+      th.style.width = w + 'px';
+    }
+    function onEnd() {
+      handle.classList.remove('resizing');
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onEnd);
+      onNotesEditorChange();
+    }
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd);
+  }, { passive: false });
+}
+
+/* ── Table insert ── */
+let _savedRange = null;
+
+function openTableModal() {
+  // Save current selection so we can restore it for insertion
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount) _savedRange = sel.getRangeAt(0).cloneRange();
+  document.getElementById('tableModal').classList.add('active');
+}
+function closeTableModal() {
+  document.getElementById('tableModal').classList.remove('active');
+}
+function confirmInsertTable() {
+  const rows = Math.max(1, Math.min(20, parseInt(document.getElementById('tableRowsInput').value) || 3));
+  const cols = Math.max(1, Math.min(10, parseInt(document.getElementById('tableColsInput').value) || 3));
+  closeTableModal();
+
+  // Restore selection
+  const editor = document.getElementById('notesEditor');
+  editor.focus();
+  if (_savedRange) {
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(_savedRange);
+  }
+
+  // Build table HTML
+  let html = '<table><thead><tr>';
+  for (let c = 0; c < cols; c++) html += '<th contenteditable="true">&nbsp;</th>';
+  html += '</tr></thead><tbody>';
+  for (let r = 0; r < rows - 1; r++) {
+    html += '<tr>';
+    for (let c = 0; c < cols; c++) html += '<td contenteditable="true">&nbsp;</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table><p><br></p>';
+
+  document.execCommand('insertHTML', false, html);
+  initAllTableResizers(document.getElementById('notesEditor'));
+  onNotesEditorChange();
+}
+
+/* ── Table row/col operations ── */
+function getActiveTableCell() {
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return null;
+  let node = sel.getRangeAt(0).startContainer;
+  while (node && node !== document.getElementById('notesEditor')) {
+    if (node.nodeName === 'TD' || node.nodeName === 'TH') return node;
+    node = node.parentNode;
+  }
+  return null;
+}
+
+function notesTableAddRow() {
+  const cell = getActiveTableCell();
+  if (!cell) return;
+  const row = cell.closest('tr');
+  const table = cell.closest('table');
+  const cols = row.cells.length;
+  const newRow = document.createElement('tr');
+  for (let i = 0; i < cols; i++) {
+    const td = document.createElement('td');
+    td.contentEditable = 'true';
+    td.innerHTML = '&nbsp;';
+    newRow.appendChild(td);
+  }
+  row.parentNode.insertBefore(newRow, row.nextSibling);
+  onNotesEditorChange();
+}
+
+function notesTableDelRow() {
+  const cell = getActiveTableCell();
+  if (!cell) return;
+  const row = cell.closest('tr');
+  const table = cell.closest('table');
+  if (table.rows.length <= 1) { table.remove(); }
+  else { row.remove(); }
+  onNotesEditorChange();
+  notesUpdateTableBtns();
+}
+
+function notesTableAddCol() {
+  const cell = getActiveTableCell();
+  if (!cell) return;
+  const colIdx = cell.cellIndex;
+  const table = cell.closest('table');
+  Array.from(table.rows).forEach(row => {
+    const td = row.cells[colIdx] ? document.createElement(row.cells[colIdx].nodeName) : document.createElement('td');
+    td.contentEditable = 'true';
+    td.innerHTML = '&nbsp;';
+    const ref = row.cells[colIdx + 1] || null;
+    row.insertBefore(td, ref);
+  });
+  onNotesEditorChange();
+}
+
+function notesTableDelCol() {
+  const cell = getActiveTableCell();
+  if (!cell) return;
+  const colIdx = cell.cellIndex;
+  const table = cell.closest('table');
+  let allSingle = Array.from(table.rows).every(r => r.cells.length <= 1);
+  if (allSingle) { table.remove(); }
+  else {
+    Array.from(table.rows).forEach(row => {
+      if (row.cells[colIdx]) row.deleteCell(colIdx);
+    });
+  }
+  onNotesEditorChange();
+  notesUpdateTableBtns();
+}
+
+/* ═══════════════════════════════════════════════
+   SHARED UTILS
+═══════════════════════════════════════════════ */
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ── Import Timeline ── */
+function openImportModal() {
+  document.getElementById('importTargetLabel').textContent = currentPeriod;
+
+  // Colectează toate perioadele din localStorage cu date
+  const periods = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith('okr_')) continue;
+    const periodKey = key.replace('okr_', '');
+    if (periodKey === currentPeriod) continue;
+    try {
+      const d = JSON.parse(localStorage.getItem(key));
+      if (d && Array.isArray(d.objectives) && d.objectives.length > 0) {
+        const krCount = d.objectives.reduce((s, o) => s + (o.keyResults || []).length, 0);
+        periods.push({ key: periodKey, objCount: d.objectives.length, krCount });
+      }
+    } catch(e) {}
+  }
+
+  // Sortează: trimestre înainte de luni, descrescător
+  periods.sort((a, b) => b.key.localeCompare(a.key));
+
+  const list = document.getElementById('importPeriodList');
+  if (periods.length === 0) {
+    list.innerHTML = '<div class="import-empty">Nu există perioade cu date salvate.<br>Sincronizează o perioadă cu date mai întâi.</div>';
+  } else {
+    list.innerHTML = periods.map(p => `
+      <div class="import-period-row" onclick="importFromPeriod('${p.key}')">
+        <span class="import-period-name">${p.key}</span>
+        <span class="import-period-meta">${p.objCount} obiective · ${p.krCount} KR</span>
+        <span class="import-period-arrow">→</span>
+      </div>`).join('');
+  }
+
+  document.getElementById('importModal').classList.add('active');
+}
+
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('active');
+}
+
+function importFromPeriod(sourcePeriod) {
+  const raw = localStorage.getItem('okr_' + sourcePeriod);
+  if (!raw) return;
+  try {
+    const source = JSON.parse(raw);
+    if (!Array.isArray(source.objectives)) return;
+    data = {
+      objectives: source.objectives.map(obj => ({
+        id: uid(),
+        title: obj.title,
+        color: obj.color,
+        keyResults: (obj.keyResults || []).map(kr => ({
+          id: uid(),
+          text: kr.text,
+          progress: 0
+        }))
+      }))
+    };
+    closeImportModal();
+    render();
+    debouncedSave();
+  } catch(e) {}
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeObjModal(); closeKrModal(); closeTaskModal(); closeImportModal(); closeTableModal(); }
+  if (e.key === 'Enter') {
+    if (document.getElementById('objModal').classList.contains('active'))  saveObjective();
+    if (document.getElementById('krModal').classList.contains('active'))   saveKr();
+    if (document.getElementById('taskModal').classList.contains('active') && e.ctrlKey) saveTask();
   }
 });
 
-// INIT
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
 const savedTheme = localStorage.getItem('okr_theme');
-if (savedTheme === 'light') { isLight=true; document.body.classList.add('light'); document.getElementById('themeBtn').textContent='🌙 Dark'; }
-document.getElementById('periodSelect').value = currentPeriod;
+if (savedTheme === 'light') {
+  isLight = true;
+  document.body.classList.add('light');
+  document.getElementById('themeBtn').textContent = '🌙 Dark';
+}
+
+// Close period dropdown on outside click
+document.addEventListener('click', e => {
+  const dd = document.getElementById('pdDropdown');
+  if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+});
+
+const savedTab = localStorage.getItem('okr_active_tab');
+if (savedTab === 'todo') switchTab('todo');
+else if (savedTab === 'notes') switchTab('notes');
+else switchTab('okr');
+
+buildPeriodDropdown();
 loadFromSheets(currentPeriod);
+loadTodo();
+loadNotes();
 </script>
 </body>
 </html>
