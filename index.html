@@ -1505,11 +1505,11 @@ async function saveTodoToSheets() {
   localStorage.setItem('todo_data', JSON.stringify(todoData));
   const url = API_URL + '?action=save&quarter=todo_all&data=' + encodeURIComponent(JSON.stringify(todoData));
   try {
-    await fetch(url, { mode: 'no-cors' });
+    const res = await fetch(url, { redirect: 'follow' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     setSyncStatus('ok', 'Salvat ✓');
   } catch(e) {
-    new Image().src = url;
-    setSyncStatus('ok', 'Salvat ✓');
+    setSyncStatus('err', 'Eroare la salvare');
   }
 }
 
